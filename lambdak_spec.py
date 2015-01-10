@@ -146,6 +146,34 @@ class test_try_(t.TestCase):
     try_(lambda: 1, lambda: setattr(a, "x", 2))()
     self.assertEqual(a.x, val)
 
+class test_for_(t.TestCase):
+  def test_for_act(self):
+    class A: pass
+    a = A()
+    vals = (1, 2, 3)
+
+    for_(range(1, 4), lambda x: setattr(a, "x%s" % x, x))()
+
+    self.assertEqual((a.x1, a.x2, a.x3), vals)
+
+class test_attr_accessors(t.TestCase):
+  def test_setattr_(self):
+    class A: pass
+    a = A()
+    val = 1
+
+    setattr_(a, "x", val)()
+    self.assertEqual(a.x, val)
+
+  def test_delattr_(self):
+    class A: pass
+    a = A()
+    attr_name = "x"
+    a.x = 1
+
+    delattr_(a, attr_name)()
+    self.assertFalse(hasattr(a, attr_name))
+
 if __name__ == "__main__":
   t.main()
 

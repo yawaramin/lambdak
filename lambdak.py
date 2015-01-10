@@ -79,16 +79,9 @@ def setattr_(x, attr_name, attr_val, k = None):
 
   return lambdak(act)
 
-def delattr_(x, attr_name, attr_val, k = None):
+def delattr_(x, attr_name, k = None):
   def act():
-    delattr(x, attr_name, attr_val)
-    return __call_k(k)
-
-  return lambdak(act)
-
-def del_(x, k = None):
-  def act():
-    del x
+    delattr(x, attr_name)
     return __call_k(k)
 
   return lambdak(act)
