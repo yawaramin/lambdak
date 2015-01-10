@@ -1,6 +1,9 @@
 import unittest as t
 from lambdak import *
 
+# A helper class to test attribute access.
+class A: pass
+
 class test_lambdak(t.TestCase):
   def test_init_k_x(self):
     args = (1, 2)
@@ -15,7 +18,6 @@ class test_lambdak(t.TestCase):
 
 class test_do_(t.TestCase):
   def test_do_1(self):
-    class A: pass
     a = A()
     val = 1
 
@@ -23,7 +25,6 @@ class test_do_(t.TestCase):
     self.assertEqual(a.x, val)
 
   def test_do_2(self):
-    class A: pass
     a = A()
     (val1, val2) = (1, 2)
 
@@ -130,7 +131,6 @@ class test_import_(t.TestCase):
 
 class test_try_(t.TestCase):
   def test_try_exn(self):
-    class A: pass
     a = A()
     val = 1
 
@@ -138,7 +138,6 @@ class test_try_(t.TestCase):
     self.assertEqual(a.x, val)
 
   def test_try_noexn(self):
-    class A: pass
     a = A()
     val = 1
     a.x = val
@@ -148,7 +147,6 @@ class test_try_(t.TestCase):
 
 class test_for_(t.TestCase):
   def test_for_act(self):
-    class A: pass
     a = A()
     vals = (1, 2, 3)
 
@@ -158,7 +156,6 @@ class test_for_(t.TestCase):
 
 class test_attr_accessors(t.TestCase):
   def test_setattr_(self):
-    class A: pass
     a = A()
     val = 1
 
@@ -166,7 +163,6 @@ class test_attr_accessors(t.TestCase):
     self.assertEqual(a.x, val)
 
   def test_delattr_(self):
-    class A: pass
     a = A()
     attr_name = "x"
     a.x = 1
