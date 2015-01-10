@@ -41,11 +41,11 @@ def raise_(ex_type = None, ex_val = None, tb_val = None):
   if ex_type is None: raise
   else: raise ex_type, ex_val, tb_val
 
-def if_(test_expr, then_expr, else_expr, k):
+def if_(test_expr, then_expr, else_expr, k = None):
   if test_expr: return lambdak(k, then_expr())
   else: return lambdak(k, else_expr())
 
-def cond_(test_pairs, default_expr, k):
+def cond_(test_pairs, default_expr, k = None):
   for (test_expr, then_expr) in test_pairs:
     if test_expr(): return lambdak(k, then_expr())
   else: return lambdak(k, default_expr())
