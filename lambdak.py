@@ -86,22 +86,3 @@ def delattr_(x, attr_name, k = None):
 
   return lambdak(act)
 
-if __name__ == "__main__":
-  dispatch_dict = {
-    "foo":
-      print_("I pity the foo!", lambda:
-      for_(range(5), lambda x:
-        print_(x))),
-
-    "bar":
-      import_("math", lambda m:
-      let_(5, lambda r:
-
-      print_("The radius of the circle is:", lambda:
-      print_(m.pi * r * r)))),
-
-    "baz":
-      print_("None of your bazness!") }
-
-  dispatch_dict["bar"]()
-
