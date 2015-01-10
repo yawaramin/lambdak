@@ -10,9 +10,14 @@ class lambdak(object):
 
     while k is not None:
       l = k() if x is None else k(x)
-      if l is None: return
+
+      # If we didn't get back a lambdak, then we've reached the end of
+      # the lambdak chain, and it's time to stop.
+      if not isinstance(l, lambdak): return l
       (k, x) = (l.k, l.x)
 
+    # If the lambdak we got back didn't have a continuation function,
+    # then it's also time to stop.
     return x
 
 def __call_k(k): return None if k is None else k()
@@ -20,8 +25,6 @@ def __call_k(k): return None if k is None else k()
 def let_(expr, k): return lambdak(k, expr)
 
 def do_(expr, k = None): return lambdak(k, expr)
-
-def return_(x): return lambdak(None, x)
 
 def print_(x, k = None):
   def act():
