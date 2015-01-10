@@ -13,7 +13,15 @@ class lambdak(object):
       if l is None: return
       (k, x) = (l.k, l.x)
 
+    return x
+
 def __call_k(k): return None if k is None else k()
+
+def let_(expr, k): return lambdak(k, expr)
+
+def do_(expr, k = None): return lambdak(k, expr)
+
+def return_(x): return lambdak(None, x)
 
 def print_(x, k = None):
   def act():
@@ -21,8 +29,6 @@ def print_(x, k = None):
     return __call_k(k)
 
   return lambdak(act)
-
-def let_(expr, k): return lambdak(k, expr)
 
 def assert_(expr, k = None):
   def act():
