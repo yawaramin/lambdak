@@ -22,7 +22,7 @@ def print_(x, k = None):
 
   return lambdak(act)
 
-def let_(expr, k = None): return lambdak(k, expr)
+def let_(expr, k): return lambdak(k, expr)
 
 def assert_(expr, k = None):
   def act():
@@ -31,16 +31,20 @@ def assert_(expr, k = None):
 
   return lambdak(act)
 
-def if_(test_expr, then_expr, else_expr, k = None):
+def raise_(ex_type = None, ex_val = None, tb_val = None):
+  if ex_type is None: raise
+  else: raise ex_type, ex_val, tb_val
+
+def if_(test_expr, then_expr, else_expr, k):
   if test_expr: return lambdak(k, then_expr())
   else: return lambdak(k, else_expr())
 
-def cond_(test_pairs, default_expr, k = None):
+def cond_(test_pairs, default_expr, k):
   for (test_expr, then_expr) in test_pairs:
     if test_expr(): return lambdak(k, then_expr())
   else: return lambdak(k, default_expr())
 
-def import_(mod_name, k = None):
+def import_(mod_name, k):
   m = __import__(mod_name)
   return lambdak(k, m)
 
@@ -55,6 +59,27 @@ def try_(expr_k, except_k, finally_k = None):
 def for_(seq, act_k, k = None):
   def act():
     for x in seq: lambdak(act_k, x)()
+    return __call_k(k)
+
+  return lambdak(act)
+
+def setattr_(x, attr_name, attr_val, k = None):
+  def act():
+    setattr(x, attr_name, attr_val)
+    return __call_k(k)
+
+  return lambdak(act)
+
+def delattr_(x, attr_name, attr_val, k = None):
+  def act():
+    delattr(x, attr_name, attr_val)
+    return __call_k(k)
+
+  return lambdak(act)
+
+def del_(x, k = None):
+  def act():
+    del x
     return __call_k(k)
 
   return lambdak(act)
