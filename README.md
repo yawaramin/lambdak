@@ -72,16 +72,97 @@ lambdas.
 
 ## Reference
 
+The `lambdak` module is designed to be 'star-imported' (`from lambdak
+import *`).
+
 ### `let_`
 
-Arguments:
+#### Arguments
 
   - `expr`. Any value that we want to bind to a name.
 
   - `k`. Must be a callable which accepts a single argument and returns
     a value of any type. It will be called with the value of `expr`.
 
-Returns:
+#### Returns
 
-The last value returned by the chain of `lambdak`s.
+The last value returned by the chain of `lambdak`s that starts running
+when we call `k`.
+
+#### Example
+
+Since `lambdak`s can be nested to an arbitrary level, you can take this
+example as just a small sample of what's possible.
+
+```python
+test = (
+  let_(5, lambda x:
+  let_(2 * x, lambda y:
+  print_("About to return the answer!", lambda:
+  y - 9))))
+
+print test()
+```
+
+Output:
+
+    About to return the answer!
+    1
+
+Think of the above as saying, `test` is a `lambdak` that does the
+following:
+
+  - Binds the value `5` to the name `x`
+
+  - Binds the value of the expression `2 * x` to the name `y`
+
+  - Returns the value of the expression `y - 9`.
+
+Behind the scenes, all of the above are joined into a single callable.
+You can then call that to run all of its contained actions and
+calculations.
+
+Note that we didn't have to assign the `lambdak` to the variable `test`.
+We could have passed it in to a function, stored it in a list or other
+structure, and treated it any way we'd treat a normal lambda function.
+The difference is of course that it contains a lot more than a normal
+lambda function would.
+
+### `do_`
+
+Meant to be used when you just want to evaluate an expression which has
+a side effect, and then optionally carry on with other actions or
+calculations.
+
+#### Arguments
+
+  - `expr`. Any expression that we want to evaluate for its side
+    effects.
+
+  - `k`. Optional. If supplied, must be a callable which does not accept
+    any arguments and returns any value.
+
+#### Returns
+
+The same as `let_` would return.
+
+#### Example
+
+```python
+def hello(): print "Hello!"
+def hi(): print "Hi!"
+
+test = (
+  # Note: we don't really use x here, so it's redundant.
+  let_(5, lambda x:
+  do_(hello(), lambda:
+  do_(hi()))))
+
+test()
+```
+
+Output:
+
+    Hello!
+    Hi!
 
