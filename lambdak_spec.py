@@ -32,6 +32,22 @@ class test_do_(t.TestCase):
     do_(setattr(a, "y", val2)))()
     self.assertEqual((a.x, a.y), (val1, val2))
 
+class test_given_(t.TestCase):
+  def test_given_id(self):
+    val = 1
+    f = given_(lambda x: x)
+
+    self.assertEqual(f(val), val)
+
+  def test_given_recursion(self):
+    f = (
+      given_(lambda x:
+      if_(x <= 1,
+        lambda: 1,
+        lambda: x * f(x - 1))))
+
+    self.assertEqual(f(10), 3628800)
+
 class test_let_(t.TestCase):
   def test_let_val(self):
     val = 1

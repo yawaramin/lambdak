@@ -3,18 +3,25 @@
 class lambdak(object):
   '''A lambda with a continuation, to allow extended calculations.'''
   def __init__(self, k, x = None):
-    (self.k, self.x) = (k, x)
+    self.k, self.x = k, x
 
-  def __call__(self):
-    (k, x) = (self.k, self.x)
+  def __call__(self, *args, **kwargs):
+    k, x = self.k, self.x
 
     while k is not None:
-      l = k() if x is None else k(x)
+      if args != () and kwargs != {}:
+        l = k(*args, **kwargs)
+        args = ()
+        kwargs = {}
+      elif args != ():
+        l = k(*args)
+        args = ()
+      else: l = k() if x is None else k(x)
 
       # If we didn't get back a lambdak, then we've reached the end of
       # the lambdak chain, and it's time to stop.
       if not isinstance(l, lambdak): return l
-      (k, x) = (l.k, l.x)
+      k, x = l.k, l.x
 
     # If the lambdak we got back didn't have a continuation function,
     # then it's also time to stop.
@@ -23,6 +30,8 @@ class lambdak(object):
 def __call_k(k): return None if k is None else k()
 
 def let_(expr, k): return lambdak(k, expr)
+
+def given_(k): return lambdak(k)
 
 def do_(expr, k = None): return lambdak(k, None)
 
