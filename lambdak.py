@@ -24,7 +24,7 @@ def __call_k(k): return None if k is None else k()
 
 def let_(expr, k): return lambdak(k, expr)
 
-def do_(expr, k = None): return lambdak(k, expr)
+def do_(expr, k = None): return lambdak(k, None)
 
 def print_(x, k = None):
   def act():
