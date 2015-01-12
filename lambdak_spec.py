@@ -40,11 +40,23 @@ class test_given_(t.TestCase):
     self.assertEqual(f(val), val)
 
   def test_given_recursion(self):
-    f = (
-      given_(lambda x, acc:
-      acc if x <= 1 else f.k(x - 1, x * acc)))
+    "Test that tail recursion doesn't stack overflow if it uses lambdak's trampoline system."
+    f = given_(lambda x, acc:
+      if_(x <= 1,
+        lambda: lambda: acc,
+        # This could also be written as
+        #   lambda: functools.partial(f.k, x - 1, x * acc)
+        # But trying to make the two branches of the `if_` look
+        # consistent.
+        lambda: lambda: f.k(x - 1, x * acc),
+        lambda k: k()))
 
-    self.assertEqual(f(25, 1), 15511210043330985984000000)
+    try: f(1000, 1)
+    except:
+      self.assertTrue(False)
+      return
+
+    self.assertTrue(True)
 
 class test_let_(t.TestCase):
   def test_let_val(self):
