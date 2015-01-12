@@ -41,12 +41,10 @@ class test_given_(t.TestCase):
 
   def test_given_recursion(self):
     f = (
-      given_(lambda x:
-      if_(x <= 1,
-        lambda: 1,
-        lambda: x * f(x - 1))))
+      given_(lambda x, acc:
+      acc if x <= 1 else f.k(x - 1, x * acc)))
 
-    self.assertEqual(f(10), 3628800)
+    self.assertEqual(f(25, 1), 15511210043330985984000000)
 
 class test_let_(t.TestCase):
   def test_let_val(self):
@@ -71,33 +69,18 @@ class test_assert_(t.TestCase):
       self.assertTrue(True)
 
 class test_raise_(t.TestCase):
-  def test_raise_last(self):
-    try: raise Exception
-    except:
-      try: raise_()
-      except Exception:
-        self.assertTrue(True)
-        return
+  def setUp(self): self.exn = Exception
 
-      self.assertTrue(False)
+  def test_raise_last(self):
+    try: raise self.exn
+    except: self.assertRaises(self.exn, raise_)
 
   def test_raise_exn_type(self):
-    try: raise_(Exception)
-    except Exception:
-      self.assertTrue(True)
-      return
-
-    self.assertTrue(False)
+    self.assertRaises(self.exn, raise_, self.exn)
 
   def test_raise_exn_val(self):
     e = Exception("Bad")
-
-    try: raise_(e)
-    except Exception:
-      self.assertTrue(True)
-      return
-
-    self.assertTrue(False)
+    self.assertRaises(self.exn, raise_, e)
 
   def test_raise_exn_type_val(self):
     msg = "Bad"
