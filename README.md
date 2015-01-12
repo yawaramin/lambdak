@@ -34,7 +34,7 @@ actions["goodbye"]()
 
 circumference = given_(lambda r:
   import_("math", lambda m:
-  2 * m.pi * r)
+  2 * m.pi * r))
 
 print circumference(5)
 ```
@@ -76,7 +76,7 @@ function.
 
 ## Reference
 
-Contents:
+### Contents:
 
   - [`given_`](#given_)
 
@@ -114,7 +114,7 @@ accepted by the `k` parameter.
 
 ```python
 f = given_(lambda x:
-  let_(x * 2, lambda y:
+  let_(2 * x, lambda y:
   print_(y)))
 
 f(2)
@@ -255,12 +255,13 @@ The same as `let_`.
 f = (
   assert_(True, lambda:
   print_("OK!")))
+
 f()
 ```
 
 Output:
 
-  OK!
+    OK!
 
 ### `raise_`
 
@@ -279,7 +280,9 @@ linked.
 
 #### Returns
 
-`None`.
+Theoretically `None`, but actually never returns because the `raise`
+statement jumps control flow to whichever `except: ...` block is
+closest, or failing that it crashes the program.
 
 <!--
 ### `x_`
