@@ -54,6 +54,14 @@ functions are designed to conserve stack space and avoid stack overflow.
 With this one last construct in Python, all the pieces are in place and
 you can fully express your code in _exactly_ the way you want.
 
+## News
+
+  - 2015-01-12: just published a
+    [tutorial](https://github.com/yawaramin/lambdak/wiki/Unbounded-Tail-Recursion-with-Lambdak)
+    on how to take advantage of lambdak's support for nested function
+    calls to do unlimited tail recursion in Python. It's even cooler
+    than it sounds, check it out.
+
 ## Overview
 
 The central concept in this module is the `lambdak`. This is a callable
