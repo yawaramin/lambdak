@@ -50,8 +50,11 @@ def assert_(expr, k = None):
   return lambdak(act)
 
 def raise_(ex_type = None, ex_val = None, tb_val = None):
-  if ex_type is None: raise
-  else: raise ex_type, ex_val, tb_val
+  def act():
+    if ex_type is None: raise
+    else: raise ex_type, ex_val, tb_val
+
+  return lambdak(act)
 
 def if_(test_expr, then_expr, else_expr = None, k = None):
   if test_expr: return lambdak(k, then_expr())
