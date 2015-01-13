@@ -104,6 +104,8 @@ character ('_') as the last character.
 
   - [`raise_`](#raise_)
 
+  - [`if_`](#if_)
+
   - More (both pending documentation and implementation)
 
 ### `call_`
@@ -215,9 +217,10 @@ calculations.
   - `expr`. Any expression that we want to evaluate for its side
     effects.
 
-  - `k`. Optional. If supplied, must be a callable which does not accept
-    any arguments and returns any value. This contains the rest of the
-    computation (i.e. the rest of the lambdak chain).
+  - `k`. Optional (default `None`). If supplied, must be a callable
+    which does not accept any arguments and returns any value. This
+    contains the rest of the computation (i.e. the rest of the lambdak
+    chain).
 
 #### Returns
 
@@ -253,7 +256,7 @@ Print a single expression and optionally carry on the computation.
   - `x`. The expression to print. This is passed to [Python's `print`
     statement](https://docs.python.org/2/reference/simple_stmts.html#the-print-statement).
 
-  - `k`. Optional. The same as `do_`.
+  - `k`. Optional (default `None`). The same as `do_`.
 
 #### Returns
 
@@ -307,6 +310,44 @@ linked.
 Theoretically `None`, but actually never returns because the `raise`
 statement jumps control flow to whichever `except: ...` block is
 closest, or failing that it crashes the program.
+
+### `if_`
+
+Conditional function that returns one out of two values, depending on
+the boolean value of its test expression.
+
+#### Arguments
+
+  - `test_expr`. This must be a boolean expression.
+
+  - `then_expr`. Thus must be a callable, usually a value inside a
+    lambda expression. If `test_expr` evaluates to `True`, `then_expr`
+    will be called (with no arguments) and the value passed on to the
+    next lambdak in the chain.
+
+  - `else_expr`. Optional (default `None`). This must be a callable like
+    `then_expr`. If `test_expr` evaluates to `False`, `else_expr` will
+    be called (with no arguments) and the result value passed on to the
+    next lambdak. If the argument is not provided and `test_expr`
+    evaluates to `False`, `None` will be passed on.
+
+  - `k`. Optional (default `None`). A callable (usually a lambda) which
+    takes the result value of the test and returns the next lambdak in
+    the chain (or the final return value).
+
+#### Returns
+
+The same as `let_`.
+
+#### Example
+
+```python
+test = given_(lambda x:
+  if_(x < 10,
+    lambda: "Too low!",
+    lambda: "OK.", lambda y:
+  print_(y)))
+```
 
 <!--
 ### `x_`
