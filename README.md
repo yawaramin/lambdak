@@ -76,7 +76,13 @@ function.
 
 ## Reference
 
-### Contents:
+The `lambdak` module is designed to be 'star-imported' (`from lambdak
+import *`): the functions below have all been named with an underscore
+character ('_') as the last character.
+
+### Contents
+
+  - [`call_`](#call_)
 
   - [`given_`](#given_)
 
@@ -90,9 +96,19 @@ function.
 
   - [`raise_`](#raise_)
 
-The `lambdak` module is designed to be 'star-imported' (`from lambdak
-import *`): the functions below have all been named with an underscore
-character ('_') as the last character.
+  - More (both pending documentation and implementation)
+
+### `call_`
+
+Call the given function with no arguments.
+
+#### Arguments
+
+  - `k`. The function to call. It will be called with no arguments.
+
+#### Returns
+
+The result returned by `k`, or `None` if `k` is `None`.
 
 ### `given_`
 

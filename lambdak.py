@@ -27,7 +27,7 @@ class lambdak(object):
     # then it's also time to stop.
     return x
 
-def __call_k(k): return None if k is None else k()
+def call_(k): return None if k is None else k()
 
 def let_(expr, k): return lambdak(k, expr)
 
@@ -38,14 +38,14 @@ def do_(expr, k = None): return lambdak(k, None)
 def print_(x, k = None):
   def act():
     print x
-    return __call_k(k)
+    return call_(k)
 
   return lambdak(act)
 
 def assert_(expr, k = None):
   def act():
     assert expr
-    return __call_k(k)
+    return call_(k)
 
   return lambdak(act)
 
@@ -55,12 +55,12 @@ def raise_(ex_type = None, ex_val = None, tb_val = None):
 
 def if_(test_expr, then_expr, else_expr = None, k = None):
   if test_expr: return lambdak(k, then_expr())
-  else: return lambdak(k, __call_k(else_expr))
+  else: return lambdak(k, call_(else_expr))
 
 def cond_(test_pairs, default_expr = None, k = None):
   for (test_expr, then_expr) in test_pairs:
     if test_expr(): return lambdak(k, then_expr())
-  else: return lambdak(k, __call_k(default_expr))
+  else: return lambdak(k, call_(default_expr))
 
 def import_(mod_name, k):
   m = __import__(mod_name)
@@ -70,28 +70,28 @@ def try_(expr_k, except_k, finally_k = None):
   def act():
     try: lambdak(expr_k)()
     except: lambdak(except_k)()
-    finally: return __call_k(finally_k)
+    finally: return call_(finally_k)
 
   return lambdak(act)
 
 def for_(seq, act_k, k = None):
   def act():
     for x in seq: lambdak(act_k, x)()
-    return __call_k(k)
+    return call_(k)
 
   return lambdak(act)
 
 def setattr_(x, attr_name, attr_val, k = None):
   def act():
     setattr(x, attr_name, attr_val)
-    return __call_k(k)
+    return call_(k)
 
   return lambdak(act)
 
 def delattr_(x, attr_name, k = None):
   def act():
     delattr(x, attr_name)
-    return __call_k(k)
+    return call_(k)
 
   return lambdak(act)
 

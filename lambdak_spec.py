@@ -16,6 +16,16 @@ class test_lambdak(t.TestCase):
 
     self.assertEqual((lk.k, lk.x), (1, None))
 
+class test_call_(t.TestCase):
+  def test_call_none(self):
+    self.assertEqual(call_(None), None)
+
+  def test_call_func(self):
+    val = 1
+    def f(): return val
+
+    self.assertEqual(call_(f), val)
+
 class test_do_(t.TestCase):
   def test_do_1(self):
     a = A()
