@@ -106,6 +106,8 @@ character ('_') as the last character.
 
   - [`with_`](#with_)
 
+  - [`cond_`](#cond_)
+
   - More (both pending documentation and implementation)
 
 ### `call_`
