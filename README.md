@@ -347,7 +347,15 @@ test = given_(lambda x:
     lambda: "Too low!",
     lambda: "OK.", lambda y:
   print_(y)))
+
+test(5)
+test(10)
 ```
+
+Output:
+
+    Too low!
+    OK.
 
 <!--
 ### `x_`

@@ -33,7 +33,12 @@ def let_(expr, k): return lambdak(k, expr)
 
 def given_(k): return lambdak(k)
 
-def do_(expr, k = None): return lambdak(k, None)
+def do_(expr_k, k = None):
+  def act():
+    expr_k()
+    return call_(k)
+
+  return lambdak(act)
 
 def print_(x, k = None):
   def act():

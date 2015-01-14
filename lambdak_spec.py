@@ -26,20 +26,28 @@ class test_call_(t.TestCase):
     self.assertEqual(call_(f), val)
 
 class test_do_(t.TestCase):
-  def setUp(self): self.a = A()
+  def setUp(self):
+    self.a = A()
+    self.name = "x"
+    self.val = 1
+
+  def test_do_not(self):
+    "The do_ action shouldn't be carried out unless the lambdak is called."
+    self.a.x = 2
+    d = do_(lambda: setattr(self.a, self.name, self.val))
+
+    self.assertNotEqual(self.a.x, self.val)
 
   def test_do_1(self):
-    val = 1
-
-    do_(setattr(self.a, "x", val))()
-    self.assertEqual(self.a.x, val)
+    do_(lambda: setattr(self.a, self.name, self.val))()
+    self.assertEqual(self.a.x, self.val)
 
   def test_do_2(self):
-    val1, val2 = 1, 2
+    val2 = 2
 
-    do_(setattr(self.a, "x", val1), lambda:
-    do_(setattr(self.a, "y", val2)))()
-    self.assertEqual((self.a.x, self.a.y), (val1, val2))
+    do_(lambda: setattr(self.a, self.name, self.val), lambda:
+    do_(lambda: setattr(self.a, "y", val2)))()
+    self.assertEqual((self.a.x, self.a.y), (self.val, val2))
 
 class test_given_(t.TestCase):
   def test_given_id(self):
