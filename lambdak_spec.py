@@ -59,10 +59,8 @@ class test_given_(t.TestCase):
   def test_given_recursion(self):
     "Test that tail recursion doesn't stack overflow if it uses lambdak's trampoline system."
     factorial = given_(lambda n, acc = 1:
-      if_(n <= 1,
-        lambda: lambda: acc,
-        lambda: lambda: factorial.k(n - 1, n * acc),
-      call_))
+      acc if n <= 1
+      else given_(lambda: factorial.k(n - 1, n * acc)))
 
     try: factorial(1000, 1)
     except: self.assertTrue(False)
@@ -110,17 +108,6 @@ class test_raise_(t.TestCase):
       return
 
     self.assertTrue(False)
-
-class test_if_(t.TestCase):
-  def setUp(self): self.val = 1
-
-  def test_if_then(self):
-    then_val = if_(True, lambda: self.val)
-    self.assertEqual(then_val(), self.val)
-
-  def test_if_else(self):
-    else_val = if_(False, None, lambda: self.val)
-    self.assertEqual(else_val(), self.val)
 
 class test_cond_(t.TestCase):
   def test_cond_val(self):

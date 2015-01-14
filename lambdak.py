@@ -61,10 +61,6 @@ def raise_(ex_type = None, ex_val = None, tb_val = None):
 
   return lambdak(act)
 
-def if_(test_expr, then_expr, else_expr = None, k = None):
-  if test_expr: return lambdak(k, then_expr())
-  else: return lambdak(k, call_(else_expr))
-
 def cond_(test_pairs, default_expr = None, k = None):
   for (test_expr, then_expr) in test_pairs:
     if test_expr(): return lambdak(k, then_expr())
