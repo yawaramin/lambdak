@@ -11,11 +11,13 @@ class test_lambdak(t.TestCase):
     args = (1, 2)
     lk = lambdak(*args)
 
-    self.assertEqual((lk.k, lk.x), args)
+    self.assertEqual((lk.k, lk.x), (1, (2,)))
 
   def test_init_k(self):
-    lk = lambdak(1)
-    self.assertEqual((lk.k, lk.x), (1, None))
+    val = 1
+    lk = lambdak(val)
+
+    self.assertEqual((lk.k, lk.x), (val, ()))
 
 class test_call_(t.TestCase):
   def test_call_none(self):
@@ -183,7 +185,7 @@ class test_with_(t.TestCase):
       yield
       self.a.x += 1
     self.incr = contextmanager(incr)
-    self.with_lk = with_(self.incr, lambda x: None)
+    self.with_lk = with_(self.incr, lambda: None)
 
   def test_with_ctx_before(self): self.assertEqual(self.a.x, 0)
 
@@ -192,18 +194,22 @@ class test_with_(t.TestCase):
     self.assertEqual(self.a.x, 2)
 
   def test_with_get_nothing(self):
-    "If the context manager doesn't bind a value, we should get a value of type Nothing."
-    with_nothing = with_(self.incr, lambda x:
-      setattr_(self.a, "y", x))()
+    "If the context manager doesn't bind a value, the handler function shouldn't get an argument."
+    try: with_(self.incr, lambda: None)()
+    except:
+      self.assertTrue(False)
+      return
 
-    self.assertIsInstance(self.a.y, Nothing)
+    self.assertTrue(True)
 
-  def test_with_get_just(self):
-    "If the context manager binds a value, we should get a value of type Just(value)."
-    with_just = with_(lambda: closing(s.StringIO()), lambda s:
-      setattr_(self.a, "y", s))()
+  def test_with_get_val(self):
+    "If the context manager binds a value, the handler function should get the value as an argument."
+    try: with_(lambda: closing(s.StringIO()), lambda s: None)()
+    except:
+      self.assertTrue(False)
+      return
 
-    self.assertIsInstance(self.a.y, Just)
+    self.assertTrue(True)
 
 if __name__ == "__main__":
   t.main()

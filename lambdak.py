@@ -2,8 +2,9 @@
 
 class lambdak(object):
   '''A lambda with a continuation, to allow extended calculations.'''
-  def __init__(self, k, x = None):
-    self.k, self.x = k, x
+  def __init__(self, k, x = ()):
+    self.k = k
+    self.x = x if x == () else (x,)
 
   def __call__(self, *args, **kwargs):
     k, x = self.k, self.x
@@ -16,7 +17,8 @@ class lambdak(object):
       elif args != ():
         l = k(*args)
         args = ()
-      else: l = k() if x is None else k(x)
+      # If x is empty tuple, *x will be expanded into no arguments.
+      else: l = k(*x)
 
       # If we didn't get back a lambdak, then we've reached the end of
       # the lambdak chain, and it's time to stop.
@@ -25,12 +27,7 @@ class lambdak(object):
 
     # If the lambdak we got back didn't have a continuation function,
     # then it's also time to stop.
-    return x
-
-class Maybe(object): pass
-class Just(Maybe):
-  def __init__(self, x): self.x = x
-class Nothing(Maybe): pass
+    return None if x == () else x[0]
 
 def call_(k): return None if k is None else k()
 
@@ -99,7 +96,8 @@ def delattr_(x, attr_name, k = None):
 def with_(expr_k, act_k, k = None):
   def act():
     with expr_k() as x:
-      lambdak(act_k, Nothing() if x is None else Just(x))()
+      if x is None: lambdak(act_k)()
+      else: lambdak(act_k, x)()
     return call_(k)
 
   return lambdak(act)

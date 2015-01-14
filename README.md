@@ -324,27 +324,22 @@ closest, or failing that it crashes the program.
 Wraps Python's
 [with](https://docs.python.org/2/reference/compound_stmts.html#with)
 statement, but is limited to only a single context binding at a time.
-Also, uses an optional type (`Maybe`) to distinguish between the context
-manager making a value available or not in the `as` clause. See the
-`act_k` argument for details.
 
 #### Arguments
 
   - `expr_k`. Something that can be called with no arguments to get the
     context manager.
 
-  - `act_k`. Something that can be called with one argument. It will be
-    called with the context manager that is obtained from calling
-    `expr_k`, and will be expected to perform some action with it.
+  - `act_k`. Something that will be called with either one argument, or
+    none, depending on whether context manager binds a value or not.
 
     If the context manager doesn't bind a value, i.e. if the equivalent
     `with` block in normal Python would have been `with x: ...` instead
-    of `with x as y: ...`, then `act_k` will be called with an instance
-    of the type `Nothing`, which represents a missing value.
+    of `with x as y: ...`, then `act_k` will be called without any
+    arguments.
 
     If the context manager _does_ bind a value, then `act_k` will be
-    called with an instance of the type `Just`, with its member variable
-    `x` set to the specific value. See the example for details.
+    called with that value as the argument.
 
   - `k`. Optional (default `None`). The same as for `do_`.
 
@@ -373,8 +368,7 @@ def ctx():
   yield
   print "End!"
 
-with_(ctx, lambda x:
-  assert_(isinstance(x, Nothing)))()
+with_(ctx, lambda: None)()
 ```
 
 Output:
@@ -388,12 +382,9 @@ doing something to it, and then getting its final value before the
 context manager automatically closes it.
 
 ```python
-with_(lambda: closing(StringIO.StringIO()), lambda just_s:
-  assert_(isinstance(just_s, Just), lambda:
-  let_(just_s.x, lambda s:
-
+with_(lambda: closing(StringIO.StringIO()), lambda s:
   do_(lambda: s.write("Hello, World!"), lambda:
-  print_(s.getvalue())))))()
+  print_(s.getvalue())))()
 ```
 
 Output:
