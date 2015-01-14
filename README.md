@@ -343,8 +343,8 @@ manager making a value available or not in the `as` clause. See the
     of the type `Nothing`, which represents a missing value.
 
     If the context manager _does_ bind a value, then `act_k` will be
-    called with an instance of the type `Maybe`, with its member
-    variable `x` set to the specific value. See the example for details.
+    called with an instance of the type `Just`, with its member variable
+    `x` set to the specific value. See the example for details.
 
   - `k`. Optional (default `None`). The same as for `do_`.
 
