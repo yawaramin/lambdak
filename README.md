@@ -214,8 +214,12 @@ calculations.
 
 #### Arguments
 
-  - `expr`. Any expression that we want to evaluate for its side
-    effects.
+  - `expr_k`. Any expression that we want to evaluate for its side
+    effects. Must be a callable (usually a lambda expression wrapping a
+    value or function call). Will be called (evaluated) when the `do_`
+    lambdak is eventually run. We want to delay evaluation because the
+    expression may have side effects, so we want to keep them in
+    sequence.
 
   - `k`. Optional (default `None`). If supplied, must be a callable
     which does not accept any arguments and returns any value. This
@@ -236,9 +240,13 @@ test = (
   # Note: we don't really use x here, so the let_ function call is
   # redundant.
   let_(5, lambda x:
-  do_(hello(), lambda:
-  do_(hi()))))
+  do_(lambda: hello(), lambda:
+  do_(lambda: hi()))))
+```
 
+Output: nothing yet.
+
+```python
 test()
 ```
 
