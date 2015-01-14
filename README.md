@@ -391,6 +391,89 @@ Output:
 
     Hello, World!
 
+### `cond_`
+
+Evaluate a list of tests one by one until one of them evaluates to
+`True`, and evaluate and return its corresponding value expression.
+
+Short-circuiting: if one of the condition tests evaluates to `True`, it
+won't try to evaluate any of the other tests and value expressions after
+that one.
+
+Should be used in the same way as Python's `if: ... elif: ... else:`
+statement would be, or a switch statement in some other language.
+
+#### Arguments
+
+  - `test_pairs`. Must be a sequence (i.e. iterable, like a list) of
+    tuples of (`test_expr`, `then_expr`).
+
+    `test_expr` will be called with no arguments to get a boolean value
+    to be tested.
+
+    If the value is `True`, `then_expr` will be called with no arguments
+    and the result will be passed on to the `k` function (see below).
+
+    If the value is `False`, the next `test_expr` in the sequence will
+    be called, and so on.
+
+  - `default_expr`. If none of the `test_expr`s evaluated to `True`,
+    then this expression will be called with no arguments and the result
+    passed on to the `k` function. This argument is required as a way to
+    force the developer to think about all possible cases. But as a
+    convenience, you can pass in `None` and it will do the right thing.
+
+  - `k`. Optional (default `None`). This must be a function which takes
+    no arguments and returns either a lambdak (to indicate a continuing
+    computation), or anything else (to indicate stopping).
+
+    If you have effectful code in your `then_expr`s, you won't
+    necessarily return a meaningful value from them; rather you will be
+    returning the actions (lambdaks) themselves. As a convenience, you
+    can use the handy `return_` function as this argument in those cases
+    to just pass along that lambdak and carry out the action. See the
+    second example below.
+
+#### Returns
+
+The same as `let_`. You can think of this as a let binding where one
+binding will ultimately be chosen out of multiple possible bindings.
+
+#### Example
+
+A 'pure' value calculated and returned:
+
+```python
+cond_(
+  [ (lambda: False, lambda: 0),
+    (lambda: True, lambda: 1) ],
+  None, # Default
+  lambda val: # The computed value.
+print_(val))()
+```
+
+Output:
+
+    1
+
+An 'effectful' action (lambdak) computed and returned:
+
+```python
+cond_(
+  [ (lambda: False, lambda: print_(0)),
+    (lambda: True, lambda: print_(1)) ],
+  None,
+return_)()
+```
+
+Output:
+
+    1
+
+The `return_` function works because it's the exact same thing as
+`lambda x: x`, which is what we need as the last argument of `cond_` to
+pass on the computed lambdak (action).
+
 <!--
 ### `x_`
 #### Arguments

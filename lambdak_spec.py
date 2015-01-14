@@ -118,15 +118,31 @@ class test_cond_(t.TestCase):
     val = 1
     cond_val = cond_(
       [ (lambda: True, lambda: val),
-        (lambda: False, lambda: 2) ])
+        (lambda: False, lambda: 2) ],
+      None)
 
     self.assertEqual(cond_val(), val)
 
   def test_cond_noval(self):
     cond_noval = cond_(
-      [ (lambda: False, lambda: 1) ])
+      [ (lambda: False, lambda: 1) ],
+      None)
 
     self.assertEqual(cond_noval(), None)
+
+  def test_cond_return_effect(self):
+    "An effect wrapped in a lambdak should be returned from cond_."
+    a = A()
+    a.x = 1
+    attr_name = "x"
+    val = 2
+
+    cond_(
+      [ (lambda: False, lambda: setattr_(a, attr_name, 0)),
+        (lambda: True, lambda: setattr_(a, attr_name, val)) ],
+      None,
+    return_)()
+    self.assertEqual(a.x, val)
 
 class test_import_(t.TestCase):
   def test_import_math(self):

@@ -31,6 +31,8 @@ class lambdak(object):
 
 def call_(k): return None if k is None else k()
 
+def return_(x): return x
+
 def let_(expr, k): return lambdak(k, expr)
 
 def given_(k): return lambdak(k)
@@ -63,7 +65,7 @@ def raise_(ex_type = None, ex_val = None, tb_val = None):
 
   return lambdak(act)
 
-def cond_(test_pairs, default_expr = None, k = None):
+def cond_(test_pairs, default_expr, k = None):
   for (test_expr, then_expr) in test_pairs:
     if test_expr(): return lambdak(k, then_expr())
   else: return lambdak(k, call_(default_expr))
