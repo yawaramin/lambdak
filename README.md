@@ -104,7 +104,7 @@ character ('_') as the last character.
 
   - [`raise_`](#raise_)
 
-  - [`if_`](#if_)
+  - [`with_`](#with_)
 
   - More (both pending documentation and implementation)
 
@@ -318,6 +318,87 @@ linked.
 Theoretically `None`, but actually never returns because the `raise`
 statement jumps control flow to whichever `except: ...` block is
 closest, or failing that it crashes the program.
+
+### `with_`
+
+Wraps Python's
+[with](https://docs.python.org/2/reference/compound_stmts.html#with)
+statement, but is limited to only a single context binding at a time.
+Also, uses an optional type (`Maybe`) to distinguish between the context
+manager making a value available or not in the `as` clause. See the
+`act_k` argument for details.
+
+#### Arguments
+
+  - `expr_k`. Something that can be called with no arguments to get the
+    context manager.
+
+  - `act_k`. Something that can be called with one argument. It will be
+    called with the context manager that is obtained from calling
+    `expr_k`, and will be expected to perform some action with it.
+
+    If the context manager doesn't bind a value, i.e. if the equivalent
+    `with` block in normal Python would have been `with x: ...` instead
+    of `with x as y: ...`, then `act_k` will be called with an instance
+    of the type `Nothing`, which represents a missing value.
+
+    If the context manager _does_ bind a value, then `act_k` will be
+    called with an instance of the type `Maybe`, with its member
+    variable `x` set to the specific value. See the example for details.
+
+  - `k`. Optional (default `None`). The same as for `do_`.
+
+#### Returns
+
+The same as for `let_`.
+
+#### Example
+
+First, the imports.
+
+```python
+from contextlib import closing, contextmanager
+from lambdak import *
+import StringIO
+```
+
+The example of a context manager not binding a value. Here we define a
+spurious context manager that just prints some text at the start and
+finish.
+
+```python
+@contextmanager
+def ctx():
+  print "Start!"
+  yield
+  print "End!"
+
+with_(ctx, lambda x:
+  assert_(isinstance(x, Nothing)))()
+```
+
+Output:
+
+    Start!
+    End!
+
+The example of a context manager binding a value. Here we show a more
+real-world scenario, of opening a resource within the context manager,
+doing something to it, and then getting its final value before the
+context manager automatically closes it.
+
+```python
+with_(lambda: closing(StringIO.StringIO()), lambda just_s:
+  assert_(isinstance(just_s, Just), lambda:
+  let_(just_s.x, lambda s:
+
+  do_(lambda: s.write("Hello, World!"), lambda:
+  print_(s.getvalue())))))()
+```
+
+Output:
+
+    Hello, World!
 
 <!--
 ### `x_`

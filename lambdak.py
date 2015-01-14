@@ -27,6 +27,11 @@ class lambdak(object):
     # then it's also time to stop.
     return x
 
+class Maybe(object): pass
+class Just(Maybe):
+  def __init__(self, x): self.x = x
+class Nothing(Maybe): pass
+
 def call_(k): return None if k is None else k()
 
 def let_(expr, k): return lambdak(k, expr)
@@ -86,15 +91,15 @@ def for_(seq, act_k, k = None):
   return lambdak(act)
 
 def setattr_(x, attr_name, attr_val, k = None):
-  def act():
-    setattr(x, attr_name, attr_val)
-    return call_(k)
-
-  return lambdak(act)
+  return do_(lambda: setattr(x, attr_name, attr_val), k)
 
 def delattr_(x, attr_name, k = None):
+  return do_(lambda: delattr(x, attr_name), k)
+
+def with_(expr_k, act_k, k = None):
   def act():
-    delattr(x, attr_name)
+    with expr_k() as x:
+      lambdak(act_k, Nothing() if x is None else Just(x))()
     return call_(k)
 
   return lambdak(act)

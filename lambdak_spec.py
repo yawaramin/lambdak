@@ -1,3 +1,5 @@
+from contextlib import closing, contextmanager
+import StringIO as s
 import unittest as t
 from lambdak import *
 
@@ -170,6 +172,38 @@ class test_attr_accessors(t.TestCase):
 
     delattr_(self.a, attr_name)()
     self.assertFalse(hasattr(self.a, attr_name))
+
+class test_with_(t.TestCase):
+  def setUp(self):
+    self.a = A()
+    self.a.x = 0
+
+    def incr():
+      self.a.x += 1
+      yield
+      self.a.x += 1
+    self.incr = contextmanager(incr)
+    self.with_lk = with_(self.incr, lambda x: None)
+
+  def test_with_ctx_before(self): self.assertEqual(self.a.x, 0)
+
+  def test_with_ctx_after(self):
+    self.with_lk()
+    self.assertEqual(self.a.x, 2)
+
+  def test_with_get_nothing(self):
+    "If the context manager doesn't bind a value, we should get a value of type Nothing."
+    with_nothing = with_(self.incr, lambda x:
+      setattr_(self.a, "y", x))()
+
+    self.assertIsInstance(self.a.y, Nothing)
+
+  def test_with_get_just(self):
+    "If the context manager binds a value, we should get a value of type Just(value)."
+    with_just = with_(lambda: closing(s.StringIO()), lambda s:
+      setattr_(self.a, "y", s))()
+
+    self.assertIsInstance(self.a.y, Just)
 
 if __name__ == "__main__":
   t.main()
