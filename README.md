@@ -40,9 +40,9 @@ print circumference(5)
 ```
 
 (Note: I highly recommend using an editor extension like
-[vim-cute-python](https://github.com/ehamberg/vim-cute-python) to
+[vim-cute-python](https://github.com/yawaramin/vim-cute-python) to
 prettify the code for readability. For example, it would represent the
-keyword 'lambda' with the symbol 'λ', without changing the underlying
+keyword `lambda` with the symbol 'λ', without changing the underlying
 source code.)
 
 Anyway, what's with all the lambdas?
@@ -90,23 +90,23 @@ character ('_') as the last character.
 
 ### Contents
 
-  - [`call_`](#call_)
+  - [`call_(k)`](#call_)
 
-  - [`given_`](#given_)
+  - [`given_(k)`](#given_)
 
-  - [`let_`](#let_)
+  - [`let_(expr, k)`](#let_)
 
-  - [`do_`](#do_)
+  - [`do_(expr_k, k = None)`](#do_)
 
-  - [`print_`](#print_)
+  - [`print_(x, k = None)`](#print_)
 
-  - [`assert_`](#assert_)
+  - [`assert_(expr, k = None)`](#assert_)
 
-  - [`raise_`](#raise_)
+  - [`raise_(ex_type = None, ex_val = None, tb_val = None)`](#raise_)
 
-  - [`with_`](#with_)
+  - [`with_(expr_k, act_k, k = None)`](#with_)
 
-  - [`cond_`](#cond_)
+  - [`cond_(test_pairs, default_expr, k = None)`](#cond_)
 
   - More (both pending documentation and implementation)
 
