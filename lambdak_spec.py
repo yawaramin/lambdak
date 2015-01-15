@@ -56,7 +56,7 @@ class test_do_(t.TestCase):
 class test_given_(t.TestCase):
   def test_given_id(self):
     val = 1
-    f = given_(lambda x: x)
+    f = given_(return_)
 
     self.assertEqual(f(val), val)
 
@@ -73,7 +73,7 @@ class test_given_(t.TestCase):
 class test_let_(t.TestCase):
   def test_let_val(self):
     val = 1
-    test_l = let_(val, lambda x: x)
+    test_l = let_(val, return_)
 
     self.assertEqual(test_l(), val)
 
@@ -147,7 +147,7 @@ class test_cond_(t.TestCase):
 class test_import_(t.TestCase):
   def test_import_math(self):
     "Math here is representative of the Python standard library."
-    pi_floor = import_("math", lambda m: m.floor(m.pi))
+    pi_floor = import_("math", lambda _: _.floor(_.pi))
     self.assertEqual(pi_floor(), 3)
 
 class test_try_(t.TestCase):
@@ -171,7 +171,7 @@ class test_for_(t.TestCase):
     a = A()
     vals = (1, 2, 3)
 
-    for_(range(1, 4), lambda x: setattr(a, "x%s" % x, x))()
+    for_(range(1, 4), lambda _: setattr(a, "x%s" % _, _))()
 
     self.assertEqual((a.x1, a.x2, a.x3), vals)
 
@@ -220,7 +220,7 @@ class test_with_(t.TestCase):
 
   def test_with_get_val(self):
     "If the context manager binds a value, the handler function should get the value as an argument."
-    try: with_(lambda: closing(s.StringIO()), lambda s: None)()
+    try: with_(lambda: closing(s.StringIO()), lambda _: None)()
     except:
       self.assertTrue(False)
       return
