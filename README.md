@@ -94,8 +94,6 @@ character ('_') as the last character.
 
   - [`given_(k)`](#given_)
 
-  - [`let_(expr, k)`](#let_)
-
   - [`do_(expr_k, k = None)`](#do_)
 
   - [`print_(x, k = None)`](#print_)
@@ -125,7 +123,9 @@ The result returned by `k`, or `None` if `k` is `None`.
 ### `given_`
 
 Receive arguments at the beginning of a lambdak chain so you can call
-the lambdak with those arguments.
+the lambdak with those arguments. These arguments can also have default
+values, which effectively lets you bind names to values for the duration
+of the `k` closure's scope.
 
 #### Arguments
 
@@ -136,14 +136,19 @@ the lambdak with those arguments.
 #### Returns
 
 A lambdak that can be called with the same number of arguments that are
-accepted by the `k` parameter.
+accepted by the `k` parameter. If the lambdak is called with no
+arguments, it will call `k` with no arguments.
 
 #### Example
 
+This example shows both uses of `given_`: providing a way to pass in
+arguments to call the outermost lambdak with, and also providing a way
+to bind names to values inside a lambdak.
+
 ```python
 f = given_(lambda x:
-  let_(2 * x, lambda y:
-  print_(y)))
+  given_(lambda y = 2 * x:
+    print_(y)))
 
 f(2)
 ```
@@ -153,60 +158,6 @@ Output:
     4
 
 You can think of this as, 'Given `x`, let `y` be twice `x`; print `y`'.
-
-### `let_`
-
-#### Arguments
-
-  - `expr`. Any value that we want to bind to a name.
-
-  - `k`. Must be a callable which accepts a single argument and returns
-    a value of any type. It represents the rest of the computation and
-    will be called with the value of `expr`.
-
-#### Returns
-
-A lambdak that can be called with no arguments or passed into another
-chain of lambdaks.
-
-#### Example
-
-Since `lambdak`s can be nested to an arbitrary level, you can take this
-example as just a small sample of what's possible.
-
-```python
-test = (
-  let_(5, lambda x:
-  let_(2 * x, lambda y:
-  print_("About to return the answer!", lambda:
-  y - 9))))
-
-print test()
-```
-
-Output:
-
-    About to return the answer!
-    1
-
-Think of the above as saying, `test` is a `lambdak` that does the
-following:
-
-  - Binds the value `5` to the name `x`
-
-  - Binds the value of the expression `2 * x` to the name `y`
-
-  - Returns the value of the expression `y - 9`.
-
-Behind the scenes, all of the above are joined into a single callable.
-You can then call that to run all of its contained actions and
-calculations.
-
-Note that we didn't have to assign the `lambdak` to the variable `test`.
-We could have passed it in to a function, stored it in a list or other
-structure, and treated it any way we'd treat a normal lambda function.
-The difference is of course that it contains a lot more than a normal
-lambda function would.
 
 ### `do_`
 
@@ -230,7 +181,7 @@ calculations.
 
 #### Returns
 
-The same as `let_` would return.
+The same as `given_` would return.
 
 #### Example
 
@@ -239,11 +190,8 @@ def hello(): print "Hello!"
 def hi(): print "Hi!"
 
 test = (
-  # Note: we don't really use x here, so the let_ function call is
-  # redundant.
-  let_(5, lambda x:
   do_(lambda: hello(), lambda:
-  do_(lambda: hi()))))
+  do_(lambda: hi())))
 ```
 
 Output: nothing yet.
@@ -270,7 +218,7 @@ Print a single expression and optionally carry on the computation.
 
 #### Returns
 
-The same as `let_`.
+The same as `given_`.
 
 ### `assert_`
 
@@ -284,7 +232,7 @@ The same as `let_`.
 
 #### Returns
 
-The same as `let_`.
+The same as `given_`.
 
 #### Example
 
@@ -347,7 +295,7 @@ statement, but is limited to only a single context binding at a time.
 
 #### Returns
 
-The same as for `let_`.
+The same as for `given_`.
 
 #### Example
 
@@ -438,7 +386,7 @@ statement would be, or a switch statement in some other language.
 
 #### Returns
 
-The same as `let_`. You can think of this as a let binding where one
+The same as `given_`. You can think of this as a let binding where one
 binding will ultimately be chosen out of multiple possible bindings.
 
 #### Example

@@ -33,8 +33,6 @@ def call_(k): return None if k is None else k()
 
 def return_(x): return x
 
-def let_(expr, k): return lambdak(k, expr)
-
 def given_(k): return lambdak(k)
 
 def do_(expr_k, k = None):

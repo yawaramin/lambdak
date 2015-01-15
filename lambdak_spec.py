@@ -70,13 +70,6 @@ class test_given_(t.TestCase):
     except: self.assertTrue(False)
     finally: self.assertTrue(True)
 
-class test_let_(t.TestCase):
-  def test_let_val(self):
-    val = 1
-    test_l = let_(val, return_)
-
-    self.assertEqual(test_l(), val)
-
 class test_assert_(t.TestCase):
   def test_assert_succeed(self):
     try:
