@@ -29,6 +29,9 @@ class lambdak(object):
     # then it's also time to stop.
     return None if x == () else x[0]
 
+class continue_(object): pass
+class break_(object): pass
+
 def call_(k, *args): return None if k is None else k(*args)
 
 def return_(x): return x
@@ -85,7 +88,11 @@ def try_(expr_k, except_k, finally_k = None):
 
 def for_(seq, act_k, k = None):
   def act():
-    for x in seq: lambdak(act_k, x)()
+    for x in seq:
+      y = lambdak(act_k, x)()
+      if isinstance(y, continue_): continue
+      if isinstance(y, break_): break
+
     return call_(k)
 
   return lambdak(act)

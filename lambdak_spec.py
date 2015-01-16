@@ -160,13 +160,31 @@ class test_try_(t.TestCase):
     self.assertEqual(self.a.x, val)
 
 class test_for_(t.TestCase):
+  def setUp(self):
+    self.a = A()
+
   def test_for_act(self):
-    a = A()
     vals = (1, 2, 3)
 
-    for_(range(1, 4), lambda _: setattr(a, "x%s" % _, _))()
+    for_(range(1, 4), lambda _: setattr(self.a, "x%s" % _, _))()
+    self.assertEqual((self.a.x1, self.a.x2, self.a.x3), vals)
 
-    self.assertEqual((a.x1, a.x2, a.x3), vals)
+  def test_for_break(self):
+    break_val = 3
+
+    for_(range(1, 5), lambda i:
+      break_() if i == break_val
+      else setattr(self.a, "x", i))()
+    self.assertEqual(self.a.x, break_val - 1)
+
+  def test_for_continue(self):
+    skip_val = 3
+    self.a.x = []
+
+    for_(range(1, 5), lambda i:
+      continue_() if i == skip_val
+      else self.a.x.append(i))()
+    self.assertFalse(skip_val in self.a.x)
 
 class test_attr_accessors(t.TestCase):
   def setUp(self): self.a = A()
