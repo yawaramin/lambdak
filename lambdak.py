@@ -105,3 +105,19 @@ def with_(expr_k, act_k, k = None):
 
   return lambdak(act)
 
+def assign_(nm, v, d, k = None):
+  def act():
+    d[nm] = v
+    return call_(k)
+
+  return lambdak(act)
+
+def get_(nm, d): return d[nm]
+
+def del_(nm, d, k = None):
+  def act():
+    del d[nm]
+    return call_(k)
+
+  return lambdak(act)
+

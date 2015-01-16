@@ -220,6 +220,23 @@ class test_with_(t.TestCase):
 
     self.assertTrue(True)
 
+class test_dict_accessors(t.TestCase):
+  def setUp(self):
+    self.k, self.v = "x", 1
+    self.d = { self.k: self.v }
+
+  def test_assign_val(self):
+    val = 2
+
+    assign_(self.k, val, self.d)()
+    self.assertEqual(self.d[self.k], val)
+
+  def test_get_val(self): self.assertEqual(get_(self.k, self.d), self.v)
+
+  def test_del_key(self):
+    del_(self.k, self.d)()
+    self.assertTrue(self.k not in self.d)
+
 if __name__ == "__main__":
   t.main()
 

@@ -106,6 +106,12 @@ character ('_') as the last character.
 
   - [`cond_(test_pairs, default_expr, k = None)`](#cond_)
 
+  - [`assign_(nm, v, d, k = None)`](#assign_)
+
+  - [`get_(nm, d)`](#get_)
+
+  - [`del_(nm, d, k = None)`](#del_)
+
   - More (both pending documentation and implementation)
 
 ### `call_`
@@ -424,10 +430,106 @@ The `return_` function works because it's the exact same thing as
 `lambda x: x`, which is what we need as the last argument of `cond_` to
 pass on the computed lambdak (action).
 
+### `assign_`
+
+Assign a value to a dict object given its key. This function can
+be used to manipulate the module's global variables. Example shown
+below.
+
+#### Arguments
+
+  - `nm`. The key to look up in the dict.
+
+  - `v`. The value to assign to the corresponding object.
+
+  - `d`. The dictto look in.
+
+  - `k`. Optional (default `None`). Same as for `do_`.
+
+#### Returns
+
+The same as `given_`.
+
+#### Example
+
+To potentially change a global variable `x` to some value:
+
+```python
+test = assign_("x", 1, globals())
+```
+
+To actually change the value:
+
+```python
+test()
+```
+
+### `get_`
+
+Get the value of an object in a dict given its key. Note that this
+function doesn't have a continuation. It's a pure function with no side
+effects (unless someone has changed the very mechanism of dict
+lookups themselves), so it doesn't need one.
+
+#### Arguments
+
+  - `nm`. The key to look for.
+
+  - `d`. The dictto look in.
+
+#### Returns
+
+The value corresponding to the given key `nm`.
+
+#### Example
+
+```python
+x = get_("x", { "x": 1 })
+print x
+```
+
+Output:
+
+    1
+
+### `del_`
+
+Delete a key-value pair from a dict. This can also be used to delete a
+global variable. See example below.
+
+#### Arguments
+
+  - `nm`. The key to look for.
+
+  - `d`. The dict to look in.
+
+  - `k`. Optional (default `None`). Same as for `do_`.
+
+#### Returns
+
+The same as `given_`.
+
+#### Example
+
+To immediately delete a global variable:
+
+```python
+# In global scope
+x = 1
+
+del_("x", globals())()
+print x
+```
+
+Output:
+
+    NameError: name 'x' is not defined
+
 <!--
 ### `x_`
 #### Arguments
 #### Returns
 #### Example
+
 -->
 
