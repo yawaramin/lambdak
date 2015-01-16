@@ -1,6 +1,6 @@
 # lambdak
 
-Expressive functional programming in Python with continuations
+Full anonymous functions for Python
 
 Lambdak is pronounced 'lambda-k'.
 
@@ -51,8 +51,6 @@ We can't escape the fact that Python allows only one expression inside a
 lambda block. So, we use _more_ lambdas inside that one expression to
 'continue' our computations for as long as we want. Internally, the
 functions are designed to conserve stack space and avoid stack overflow.
-With this one last construct in Python, all the pieces are in place and
-you can fully express your code in _exactly_ the way you want.
 
 ## News
 
@@ -66,21 +64,33 @@ you can fully express your code in _exactly_ the way you want.
 
 The central concept in this module is the `lambdak`. This is a callable
 type which behaves like a normal Python lambda, except that it can be
-composed with more `lambdak`s (or with normal lambdas!) to be extended
-so that it can execute an unlimited number of statements and
-expressions. And it does so in a way that preserves memory.
+composed with more `lambdak`s (or with other values) so that it can
+execute an unlimited number of statements and expressions. And it does
+so in a way that preserves memory.
 
-The implementation details of the `lambdak` type are not important,
-because the functions detailed below work like a set of combinators to
-let you compose together a `lambdak` that does exactly what you want
-(with some restrictions).
+The lambdak functions that you'll see below mostly follow this pattern:
 
-You can think of `lambdak` as a
-[DSL](https://en.wikipedia.org/wiki/Domain-specific_language) on top of
-normal Python which extends basic lambdas into more powerful multi-line
-lambdas. Another way to think about it is as composing lots of little
-anonymous functions together to make a single, powerful anonymous
-function.
+```python
+def something_(..., k = None): ...
+```
+
+They mostly take some arguments up front that they need to carry out
+some action; and then they take a final optional argument (`k`, the
+'continuation'), which can be either:
+
+  - A function that returns another lambdak, to indicate that we want to
+    continue the computation; or
+
+  - Anything else, to indicate that this should be the final result of
+    the computation.
+
+You can imagine a chain of lambdaks, each one calling the next one in
+the chain and passing on any relevant values from its computation.
+Sometimes there is no relevant value; for example if you print two
+things one after the other there's no useful value from the first print
+action that can be passed on the the next print action. Lambdaks
+automatically handle all of that. You just compose them with the
+required values, and lots of lambdas.
 
 ## Reference
 
@@ -278,7 +288,7 @@ closest, or failing that it crashes the program.
 ### `with_`
 
 Wraps Python's
-[with](https://docs.python.org/2/reference/compound_stmts.html#with)
+[`with`](https://docs.python.org/2/reference/compound_stmts.html#with)
 statement, but is limited to only a single context binding at a time.
 
 #### Arguments
@@ -442,7 +452,7 @@ below.
 
   - `v`. The value to assign to the corresponding object.
 
-  - `d`. The dictto look in.
+  - `d`. The dict to look in.
 
   - `k`. Optional (default `None`). Same as for `do_`.
 
@@ -475,7 +485,7 @@ lookups themselves), so it doesn't need one.
 
   - `nm`. The key to look for.
 
-  - `d`. The dictto look in.
+  - `d`. The dict to look in.
 
 #### Returns
 
@@ -524,6 +534,8 @@ print x
 Output:
 
     NameError: name 'x' is not defined
+
+_Made with λ by yawaramin._
 
 <!--
 ### `x_`
