@@ -29,7 +29,7 @@ class lambdak(object):
     # then it's also time to stop.
     return None if x == () else x[0]
 
-def call_(k): return None if k is None else k()
+def call_(k, *args): return None if k is None else k(*args)
 
 def return_(x): return x
 
@@ -69,8 +69,11 @@ def cond_(test_pairs, default_expr, k = None):
   else: return lambdak(k, call_(default_expr))
 
 def import_(mod_name, k):
-  m = __import__(mod_name)
-  return lambdak(k, m)
+  def act():
+    m = __import__(mod_name)
+    return call_(k, m)
+
+  return lambdak(act)
 
 def try_(expr_k, except_k, finally_k = None):
   def act():
