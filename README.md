@@ -110,11 +110,17 @@ character ('_') as the last character.
 
   - [`assert_(expr, k = None)`](#assert_)
 
-  - [`raise_(ex_type = None, ex_val = None, tb_val = None)`](#raise_)
+  - [`for_(seq, act_k, k = None)`](#for_)
 
   - [`with_(expr_k, act_k, k = None)`](#with_)
 
   - [`cond_(test_pairs, default_expr, k = None)`](#cond_)
+
+  - [`import_(mod_name, k)`](#import_)
+
+  - [`try_(expr_k, except_k, finally_k = None)`](#try_)
+
+  - [`raise_(ex_type = None, ex_val = None, tb_val = None)`](#raise_)
 
   - [`assign_(nm, v, d, k = None)`](#assign_)
 
@@ -264,26 +270,85 @@ Output:
 
     OK!
 
-### `raise_`
+### `for_`
 
-Behaves the same way as Python's
-[`raise`](https://docs.python.org/2/reference/simple_stmts.html#the-raise-statement)
-statement. For details on the arguments below, see the documentation
-linked.
+Wraps Python's
+[`for`](https://docs.python.org/2/reference/compound_stmts.html#the-for-statement)
+statement. Fully functional, including the ability to break out of the
+loop and 'continue' (skip) to the next iteration.
+
+To break out of the loop, simply return an object of type `break_`
+from the `act_k` function. To continue (skip), return an object of type
+`continue_`. These objects can be constructed using default
+constructors, i.e. they will look like normal function calls in your
+code. See examples below.
 
 #### Arguments
 
-  - `ex_type`. Optional.
+  - `seq`. An iterable.
 
-  - `ex_val`. Optional.
+  - `act_k`. A function that takes one argument and returns the same
+    thing as `k` (below). It will be called on each iteration of the
+    loop with the value obtained from the iterable.
 
-  - `tb_val`. Optional.
+  - `k`. Optional (default `None`). A function that takes no arguments
+    and returns either a lambdak or a final value. It will be called
+    after the loop is finished to let you continue with something else
+    or stop this chain of the computation.
 
 #### Returns
 
-Theoretically `None`, but actually never returns because the `raise`
-statement jumps control flow to whichever `except: ...` block is
-closest, or failing that it crashes the program.
+The same as `given_`.
+
+#### Example
+
+Print some numbers:
+
+```python
+for_(range(1, 6), lambda i:
+  print_("Number: %s" % i), lambda:
+print_("Finished!"))()
+```
+
+Output:
+
+    Number: 1
+    Number: 2
+    Number: 3
+    Number: 4
+    Number: 5
+    Finished!
+
+Break out of the loop:
+
+```python
+for_(range(1, 6), lambda i:
+  break_() if i == 3
+  else print_("Number: %s" % i), lambda:
+print_("Finished!"))()
+```
+
+Output:
+
+    Number: 1
+    Number: 2
+    Finished!
+
+Continue to the next iteration:
+
+```python
+for_(range(1, 6), lambda i:
+  continue_() if i == 3
+  else print_("Number: %s" % i), lambda:
+print_("Finished!"))()
+
+    Number: 1
+    Number: 2
+    Number: 4
+    Number: 5
+    Finished!
+
+Notice how nothing is printed when `i` is 3!
 
 ### `with_`
 
@@ -439,6 +504,84 @@ Output:
 The `return_` function works because it's the exact same thing as
 `lambda x: x`, which is what we need as the last argument of `cond_` to
 pass on the computed lambdak (action).
+
+### `import_`
+
+Import a module and bind the module object to the parameter name of the
+`k` function (see below).
+
+#### Arguments
+
+  - `mod_name`. A string containing the name of the module to import.
+
+  - `k`. A function that takes one argument and returns a lambdak (to
+    continue the computation) or a final result (to stop). It will be
+    called with the value of the imported module. Thus, the argument
+    will be bound to the module object.
+
+#### Returns
+
+The same as `given_`.
+
+#### Example
+
+To print the area of a circle with radius 5 units:
+
+```python
+import_("math", lambda m:
+print_(m.pi * 5 * 5))()
+
+Output:
+
+    78.5398...
+
+### `try_`
+
+Wrapper for Python's
+[`try`](https://docs.python.org/2/reference/compound_stmts.html#the-try-statement)
+statement.
+
+#### Arguments
+
+  - `expr_k`. A function that takes no arguments and returns an
+    expression to try.
+
+  - `except_k`. A function that takes no arguments and does anything.
+    You can think of this as the same as the `do_` lambdak's `k`
+    parameter.
+
+  - `finally_k`. Optional (default `None`). A function that takes no
+    arguments and returns either a lambdak or a final result. Doubles as
+    the `finally` block of the `try` statement and as the continuation
+    function, because the `finally` block is _always_ executed whether
+    or not an exception occurred.
+
+#### Returns
+
+The same as `given_`.
+
+#### Example
+
+### `raise_`
+
+Behaves the same way as Python's
+[`raise`](https://docs.python.org/2/reference/simple_stmts.html#the-raise-statement)
+statement. For details on the arguments below, see the documentation
+linked.
+
+#### Arguments
+
+  - `ex_type`. Optional.
+
+  - `ex_val`. Optional.
+
+  - `tb_val`. Optional.
+
+#### Returns
+
+Theoretically `None`, but actually never returns because the `raise`
+statement jumps control flow to whichever `except: ...` block is
+closest, or failing that it crashes the program.
 
 ### `assign_`
 
