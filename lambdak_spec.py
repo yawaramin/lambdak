@@ -179,28 +179,68 @@ class test_for_(t.TestCase):
 
   def test_for_continue(self):
     skip_val = 3
-    self.a.x = []
+    xs = []
 
     for_(range(1, 5), lambda i:
       continue_() if i == skip_val
-      else self.a.x.append(i))()
-    self.assertFalse(skip_val in self.a.x)
+      else xs.append(i))()
+    self.assertFalse(skip_val in xs)
+
+class test_while_(t.TestCase):
+  def setUp(self):
+    self.a = A()
+    self.a.x = 0
+    self.inc = lambda x: x + 1
+
+  def test_while_expr(self):
+    val = 10
+
+    while_(lambda: self.a.x < val, lambda:
+      modattr_(self.a, "x", self.inc))()
+    self.assertEqual(self.a.x, val)
+
+  def test_while_break(self):
+    break_val = 5
+
+    while_(lambda: True, lambda:
+      break_() if self.a.x == break_val
+      else modattr_(self.a, "x", self.inc))()
+    self.assertEqual(self.a.x, break_val)
+
+  def test_while_continue(self):
+    "Should immediately skip to the next iteration of the loop if an object of type `continue_` is returned from any of the lambdaks inside the `while_` lambdak."
+    xs = []
+    skip_val = 2
+
+    while_(lambda: self.a.x <= 4, lambda:
+      modattr_(self.a, "x", self.inc, lambda:
+      continue_() if self.a.x == skip_val
+      else xs.append(self.a.x)))()
+    self.assertFalse(skip_val in xs)
 
 class test_attr_accessors(t.TestCase):
-  def setUp(self): self.a = A()
+  def setUp(self):
+    self.a = A()
+    self.attr_name = "x"
 
   def test_setattr_(self):
     val = 1
 
-    setattr_(self.a, "x", val)()
+    setattr_(self.a, self.attr_name, val)()
     self.assertEqual(self.a.x, val)
 
   def test_delattr_(self):
-    attr_name = "x"
     self.a.x = 1
 
-    delattr_(self.a, attr_name)()
-    self.assertFalse(hasattr(self.a, attr_name))
+    delattr_(self.a, self.attr_name)()
+    self.assertFalse(hasattr(self.a, self.attr_name))
+
+  def test_modattr_(self):
+    self.a.x = 1
+    def inc(x): return x + 1
+
+    modattr_(self.a, self.attr_name, inc)()
+    self.assertEqual(self.a.x, 2)
 
 class test_with_(t.TestCase):
   def setUp(self):
@@ -243,17 +283,23 @@ class test_dict_accessors(t.TestCase):
     self.k, self.v = "x", 1
     self.d = { self.k: self.v }
 
-  def test_assign_val(self):
+  def test_assign_(self):
     val = 2
 
     assign_(self.k, val, self.d)()
     self.assertEqual(self.d[self.k], val)
 
-  def test_get_val(self): self.assertEqual(get_(self.k, self.d), self.v)
+  def test_get_(self): self.assertEqual(get_(self.k, self.d), self.v)
 
-  def test_del_key(self):
+  def test_del_(self):
     del_(self.k, self.d)()
     self.assertTrue(self.k not in self.d)
+
+  def test_mod_(self):
+    def inc(x): return x + 1
+
+    mod_(self.k, inc, self.d)()
+    self.assertEqual(self.d[self.k], inc(self.v))
 
 if __name__ == "__main__":
   t.main()

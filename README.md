@@ -98,6 +98,8 @@ The `lambdak` module is designed to be 'star-imported' (`from lambdak
 import *`): the functions below have all been named with an underscore
 character ('_') as the last character.
 
+<!-- Reminder: vim bookmark 'r -->
+
 ### Contents
 
   - [`call_(k)`](#call_)
@@ -112,6 +114,8 @@ character ('_') as the last character.
 
   - [`for_(seq, act_k, k = None)`](#for_)
 
+  - [`while_(seq, act_k, k = None)`](#while_)
+
   - [`with_(expr_k, act_k, k = None)`](#with_)
 
   - [`cond_(test_pairs, default_expr, k = None)`](#cond_)
@@ -125,6 +129,8 @@ character ('_') as the last character.
   - [`assign_(nm, v, d, k = None)`](#assign_)
 
   - [`get_(nm, d)`](#get_)
+
+  - [`mod_(nm, f, d, k = None)`](#mod_)
 
   - [`del_(nm, d, k = None)`](#del_)
 
@@ -233,8 +239,9 @@ Print a single expression and optionally carry on the computation.
 
 #### Arguments
 
-  - `x`. The expression to print. This is passed to [Python's `print`
-    statement](https://docs.python.org/2/reference/simple_stmts.html#the-print-statement).
+  - `x`. The expression to print. This is passed to Python's
+    [`print`](https://docs.python.org/2/reference/simple_stmts.html#the-print-statement)
+    statement.
 
   - `k`. Optional (default `None`). The same as `do_`.
 
@@ -246,9 +253,9 @@ The same as `given_`.
 
 #### Arguments
 
-  - `expr`. The expression to assert. This is passed to [Python's
-    `assert`
-    statement](https://docs.python.org/2/reference/simple_stmts.html#the-assert-statement).
+  - `expr`. The expression to assert. This is passed to Python's
+    [`assert`](https://docs.python.org/2/reference/simple_stmts.html#the-assert-statement)
+    statement.
 
   - `k`. Optional. The same as `do_`.
 
@@ -347,8 +354,55 @@ print_("Finished!"))()
     Number: 4
     Number: 5
     Finished!
+```
 
 Notice how nothing is printed when `i` is 3!
+
+### `while_`
+
+Wraps Python's
+[`while`](https://docs.python.org/2/reference/compound_stmts.html#the-while-statement)
+statement. Like `for_`, fully supports breaking and continuing.
+
+#### Arguments
+
+  - `expr_k`. A function that takes no arguments and returns a boolean
+    value. This function is called at each iteration of the loop and the
+    resulting value is used as the test for whether to carry out the
+    loop action.
+
+  - `act_k`. A function that takes no arguments and returns either a
+    lambdak to continue the computation, or a final value to finish this
+    iteration of the loop. This is the loop action. As with the `for_`
+    lambdak, you can break or continue by returning values of type
+    `break_` or `continue_`. See the examples in the `for_` lambdak
+    (above).
+
+  - `k`. Optional (default `None`). The same as `for_`.
+
+#### Returns
+
+The same as `for_`.
+
+#### Example
+
+Simple loop:
+
+```python
+d = { 1: 1 }
+inc = lambda x: x + 1
+
+while_(lambda: d[1] < 5, lambda:
+  print_(d[1], lambda:
+  mod_(1, inc, d)))()
+```
+
+Output:
+
+    1
+    2
+    3
+    4
 
 ### `with_`
 
@@ -644,6 +698,29 @@ print x
 Output:
 
     1
+
+### `mod_`
+
+Modify in-place the value of an object in a dict given its key.
+
+#### Arguments
+
+  - `nm`. The key.
+
+  - `f`. The modification function. For example, if the function is
+    `lambda x: x + 1`, then the value will be incremented by one.
+
+  - `d`. The dict to look in.
+
+  - `k`. Optional (default `None`). The same as `assign_`.
+
+#### Returns
+
+The same as `assign_`.
+
+#### Example
+
+See the example in [`while_`](#while_).
 
 ### `del_`
 

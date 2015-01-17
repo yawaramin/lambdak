@@ -92,7 +92,16 @@ def for_(seq, act_k, k = None):
       y = lambdak(act_k, x)()
       if isinstance(y, continue_): continue
       if isinstance(y, break_): break
+    return call_(k)
 
+  return lambdak(act)
+
+def while_(expr_k, act_k, k = None):
+  def act():
+    while expr_k():
+      y = lambdak(act_k)()
+      if isinstance(y, continue_): continue
+      if isinstance(y, break_): break
     return call_(k)
 
   return lambdak(act)
@@ -102,6 +111,13 @@ def setattr_(x, attr_name, attr_val, k = None):
 
 def delattr_(x, attr_name, k = None):
   return do_(lambda: delattr(x, attr_name), k)
+
+def modattr_(x, attr_name, f, k = None):
+  def act():
+    setattr(x, attr_name, f(getattr(x, attr_name)))
+    return call_(k)
+
+  return lambdak(act)
 
 def with_(expr_k, act_k, k = None):
   def act():
@@ -124,6 +140,13 @@ def get_(nm, d): return d[nm]
 def del_(nm, d, k = None):
   def act():
     del d[nm]
+    return call_(k)
+
+  return lambdak(act)
+
+def mod_(nm, f, d, k = None):
+  def act():
+    d[nm] = f(d[nm])
     return call_(k)
 
   return lambdak(act)
