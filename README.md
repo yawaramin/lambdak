@@ -584,6 +584,7 @@ To print the area of a circle with radius 5 units:
 ```python
 import_("math", lambda m:
 print_(m.pi * 5 * 5))()
+```
 
 Output:
 
