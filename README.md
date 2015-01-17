@@ -54,11 +54,9 @@ functions are designed to conserve stack space and avoid stack overflow.
 
 ## News
 
-  - 2015-01-12: just published a
-    [tutorial](https://github.com/yawaramin/lambdak/wiki/Unbounded-Tail-Recursion-with-Lambdak)
-    on how to take advantage of lambdak's support for nested function
-    calls to do unlimited tail recursion in Python. It's even cooler
-    than it sounds, check it out.
+  - 2015-01-17: just published a page gathering [tips and
+    tricks](https://github.com/yawaramin/lambdak/wiki/Vim-Tips-for-Functional-Pythonistas)
+    for Pythonistas using Vim.
 
 ## Overview
 
