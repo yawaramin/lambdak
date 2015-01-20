@@ -25,9 +25,8 @@ actions = {
   "goodbye":
     print_("Goodbye, Cruel World!", lambda:
 
-    try_(lambda:
-      1 / 0, lambda:
-      print_("Danger, Will Robinson!"))) }
+    try_(lambda: 1 / 0,
+      except_ = lambda: print_("Danger, Will Robinson!"))) }
 
 actions["hello"]()
 actions["goodbye"]()
@@ -120,7 +119,7 @@ character ('_') as the last character.
 
   - [`import_(mod_name, k)`](#import_)
 
-  - [`try_(expr_k, except_k, finally_k = None)`](#try_)
+  - [`try_(expr_k, except_, else_ = None, finally_ = None)`](#try_)
 
   - [`raise_(ex_type = None, ex_val = None, tb_val = None)`](#raise_)
 
@@ -592,18 +591,26 @@ Output:
 
 Wrapper for Python's
 [`try`](https://docs.python.org/2/reference/compound_stmts.html#the-try-statement)
-statement.
+statement. The last three arguments are meant to be named when `try_` is
+called; this is different from the other lambdak functions' usual call
+still but because of the different permutations of the arguments, it's
+more unambiguous to name the arguments and also it looks more naturally
+like Python's normal `try` statement. See the example below.
 
 #### Arguments
 
   - `expr_k`. A function that takes no arguments and returns an
     expression to try.
 
-  - `except_k`. A function that takes no arguments and does anything.
-    You can think of this as the same as the `do_` lambdak's `k`
-    parameter.
+  - `except_`. A function that takes no arguments and does anything. You
+    can think of this as the same as the `do_` lambdak's `k` parameter.
+    It is only run if the `expr_k` function raises an exceptio.
 
-  - `finally_k`. Optional (default `None`). A function that takes no
+  - `else_`. Optional (default `None`). A function that takes no
+    argument and does anything. It is only called if the `expr_k`
+    function does _not_ raise an exception.
+
+  - `finally_`. Optional (default `None`). A function that takes no
     arguments and returns either a lambdak or a final result. Doubles as
     the `finally` block of the `try` statement and as the continuation
     function, because the `finally` block is _always_ executed whether
@@ -614,6 +621,18 @@ statement.
 The same as `given_`.
 
 #### Example
+
+```python
+try_(lambda: 1 / 0,
+  except_ = lambda: print_("Error!"),
+  else_ = lambda: print_("No error."),
+  finally_ = lambda: print_("Cleanup."))()
+```
+
+Output:
+
+    Error!
+    Cleanup.
 
 ### `raise_`
 

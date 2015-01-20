@@ -159,6 +159,34 @@ class test_try_(t.TestCase):
     try_(lambda: 1, lambda: setattr(self.a, "x", 2))()
     self.assertEqual(self.a.x, val)
 
+  def test_try_exn_else_finally(self):
+    "The else_ action should not run if there's an exception."
+    self.a.x = 1
+    ex_val = 2
+    noex_val = 3
+    finally_mult = 2
+
+    try_(lambda: 1 / 0,
+      except_ = lambda: setattr(self.a, "x", ex_val),
+      else_ = lambda: setattr(self.a, "x", noex_val),
+      finally_ =
+        lambda: modattr_(self.a, "x", lambda x: x * finally_mult))()
+    self.assertEqual(self.a.x, ex_val * finally_mult)
+
+  def test_try_noexn_else_finally(self):
+    "The else_ action should run if there's no exception."
+    self.a.x = 1
+    ex_val = 2
+    noex_val = 3
+    finally_mult = 2
+
+    try_(lambda: 1,
+      except_ = lambda: setattr(self.a, "x", ex_val),
+      else_ = lambda: setattr(self.a, "x", noex_val),
+      finally_ =
+        lambda: modattr_(self.a, "x", lambda x: x * finally_mult))()
+    self.assertEqual(self.a.x, noex_val * finally_mult)
+
 class test_for_(t.TestCase):
   def setUp(self):
     self.a = A()

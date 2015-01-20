@@ -1,4 +1,5 @@
 # lambdak.py - functional programming with continuations in Python
+from __future__ import print_function
 
 class lambdak(object):
   '''A lambda with a continuation, to allow extended calculations.'''
@@ -47,7 +48,7 @@ def do_(expr_k, k = None):
 
 def print_(x, k = None):
   def act():
-    print x
+    print(x)
     return call_(k)
 
   return lambdak(act)
@@ -78,11 +79,12 @@ def import_(mod_name, k):
 
   return lambdak(act)
 
-def try_(expr_k, except_k, finally_k = None):
+def try_(expr_k, except_, else_ = None, finally_ = None):
   def act():
     try: lambdak(expr_k)()
-    except: lambdak(except_k)()
-    finally: return call_(finally_k)
+    except: lambdak(except_)()
+    else: lambdak(else_)()
+    finally: return call_(finally_)
 
   return lambdak(act)
 
