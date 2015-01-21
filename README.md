@@ -593,9 +593,12 @@ Wrapper for Python's
 [`try`](https://docs.python.org/2/reference/compound_stmts.html#the-try-statement)
 statement. The last three arguments are meant to be named when `try_` is
 called; this is different from the other lambdak functions' usual call
-still but because of the different permutations of the arguments, it's
+style but because of the different permutations of the arguments, it's
 more unambiguous to name the arguments and also it looks more naturally
 like Python's normal `try` statement. See the example below.
+
+Unlike Python's native `try` statement, the `try_` function only
+supports one `except` clause (the `except_` parameter, see below).
 
 #### Arguments
 
@@ -612,9 +615,10 @@ like Python's normal `try` statement. See the example below.
 
   - `finally_`. Optional (default `None`). A function that takes no
     arguments and returns either a lambdak or a final result. Doubles as
-    the `finally` block of the `try` statement and as the continuation
+    the `finally` block of the `try` statement _and_ as the continuation
     function, because the `finally` block is _always_ executed whether
-    or not an exception occurred.
+    or not an exception occurred (for proof, see `lambdak_spec.py`,
+    class `test_try_`, method `test_python_try_finally_always`).
 
 #### Returns
 

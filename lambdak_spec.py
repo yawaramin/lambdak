@@ -187,6 +187,18 @@ class test_try_(t.TestCase):
         lambda: modattr_(self.a, "x", lambda x: x * finally_mult))()
     self.assertEqual(self.a.x, noex_val * finally_mult)
 
+  def test_python_try_finally_always(self):
+    "Python's built-in try statement finally clause should run even if exception occurs and is not caught."
+    start_val = 0
+    final_val = 2
+
+    try:
+      try: 1 / 0
+      except AttributeError: start_val += 1
+      finally: start_val += 2
+    except: pass
+    self.assertEqual(start_val, final_val)
+
 class test_for_(t.TestCase):
   def setUp(self):
     self.a = A()
