@@ -88,25 +88,32 @@ def try_(expr_k, except_, else_ = None, finally_ = None):
 
   return lambdak(act)
 
-def for_(seq, act_k, k = None):
+def for_else_(seq, act_k, else_, k = None):
   def act():
     for x in seq:
       y = lambdak(act_k, x)()
-      if isinstance(y, continue_): continue
-      if isinstance(y, break_): break
+      if y == continue_: continue
+      if y == break_: break
+    else: lambdak(else_)()
+    return call_(k)
+
+  return lambdak(act)
+
+def for_(seq, act_k, k = None): return for_else_(seq, act_k, None, k)
+
+def while_else_(expr_k, act_k, else_, k = None):
+  def act():
+    while expr_k():
+      y = lambdak(act_k)()
+      if y == continue_: continue
+      if y == break_: break
+    else: lambdak(else_)()
     return call_(k)
 
   return lambdak(act)
 
 def while_(expr_k, act_k, k = None):
-  def act():
-    while expr_k():
-      y = lambdak(act_k)()
-      if isinstance(y, continue_): continue
-      if isinstance(y, break_): break
-    return call_(k)
-
-  return lambdak(act)
+  return while_else_(expr_k, act_k, None, k)
 
 def setattr_(x, attr_name, attr_val, k = None):
   return do_(lambda: setattr(x, attr_name, attr_val), k)

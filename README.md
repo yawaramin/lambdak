@@ -111,7 +111,11 @@ character ('_') as the last character.
 
   - [`for_(seq, act_k, k = None)`](#for_)
 
+  - [`for_else_(seq, act_k, else_, k = None)`](#for_else_)
+
   - [`while_(seq, act_k, k = None)`](#while_)
+
+  - [`while_else_(seq, act_k, else_, k = None)`](#while_else_)
 
   - [`with_(expr_k, act_k, k = None)`](#with_)
 
@@ -281,11 +285,10 @@ Wraps Python's
 statement. Fully functional, including the ability to break out of the
 loop and 'continue' (skip) to the next iteration.
 
-To break out of the loop, simply return an object of type `break_`
-from the `act_k` function. To continue (skip), return an object of type
-`continue_`. These objects can be constructed using default
-constructors, i.e. they will look like normal function calls in your
-code. See examples below.
+To break out of the loop, simply return the type `break_` from the
+`act_k` function. To continue (skip), return the type `continue_`. These
+types can be referred to by their names; think of them as 'symbols' or
+as 'tags'. See examples below.
 
 #### Arguments
 
@@ -310,8 +313,8 @@ Print some numbers:
 
 ```python
 for_(range(1, 6), lambda i:
-  print_("Number: %s" % i), lambda:
-print_("Finished!"))()
+  print_("Number: %s" % i),
+lambda: print_("Finished!"))()
 ```
 
 Output:
@@ -327,9 +330,9 @@ Break out of the loop:
 
 ```python
 for_(range(1, 6), lambda i:
-  break_() if i == 3
-  else print_("Number: %s" % i), lambda:
-print_("Finished!"))()
+  break_ if i == 3
+  else print_("Number: %s" % i),
+lambda: print_("Finished!"))()
 ```
 
 Output:
@@ -342,7 +345,7 @@ Continue to the next iteration:
 
 ```python
 for_(range(1, 6), lambda i:
-  continue_() if i == 3
+  continue_ if i == 3
   else print_("Number: %s" % i), lambda:
 print_("Finished!"))()
 
@@ -354,6 +357,50 @@ print_("Finished!"))()
 ```
 
 Notice how nothing is printed when `i` is 3!
+
+### `for_else_`
+
+The same as `for_`, except with an extra required argument that is run
+if you _don't_ break out of the loop; see below.
+
+The reason this is a separate function is that the `else` clause is
+rarely used in code; and it has the effect of making the function call
+as a whole a little less readable.
+
+#### Arguments
+
+  - `seq`. Same as `for_`.
+
+  - `act_k`. Same as `for_`.
+
+  - `else_`. A function that is called if you _don't_ break out of the
+    loop. This models Python's native `for` statement's `else` clause.
+    For readability, you can write this as a named parameter when you
+    call the `for_else_` function; but if you do, you will also have to
+    name the `k` parameter according to Python's function call syntax.
+
+  - `k`. Same as `for_`.
+
+#### Returns
+
+Same as `for_`.
+
+#### Example
+
+```python
+for_else_(range(5),
+  lambda _: None,
+else_ = lambda: print_("Didn't break out of loop!"),
+k = lambda: print_("Done!"))()
+```
+
+Output:
+
+    Didn't break out of loop!
+    Done!
+
+To verify what happens if you do break out of the loop, replace the
+second line (`lambda _: None`) with `lambda _: break_`.
 
 ### `while_`
 
@@ -400,6 +447,11 @@ Output:
     2
     3
     4
+
+### `while_else_`
+
+This is included for the same reason as `for_else_` and works in the
+same way.
 
 ### `with_`
 

@@ -6,6 +6,10 @@ from lambdak import *
 # A helper class to test attribute access.
 class A: pass
 
+# Helper functions for the tests.
+def inc(x): return x + 1
+def double(x): return x * 2
+
 class test_lambdak(t.TestCase):
   def test_init_k_x(self):
     args = (1, 2)
@@ -164,28 +168,26 @@ class test_try_(t.TestCase):
     self.a.x = 1
     ex_val = 2
     noex_val = 3
-    finally_mult = 2
 
     try_(lambda: 1 / 0,
       except_ = lambda: setattr(self.a, "x", ex_val),
       else_ = lambda: setattr(self.a, "x", noex_val),
       finally_ =
-        lambda: modattr_(self.a, "x", lambda x: x * finally_mult))()
-    self.assertEqual(self.a.x, ex_val * finally_mult)
+        lambda: modattr_(self.a, "x", double))()
+    self.assertEqual(self.a.x, double(ex_val))
 
   def test_try_noexn_else_finally(self):
     "The else_ action should run if there's no exception."
     self.a.x = 1
     ex_val = 2
     noex_val = 3
-    finally_mult = 2
 
     try_(lambda: 1,
       except_ = lambda: setattr(self.a, "x", ex_val),
       else_ = lambda: setattr(self.a, "x", noex_val),
       finally_ =
-        lambda: modattr_(self.a, "x", lambda x: x * finally_mult))()
-    self.assertEqual(self.a.x, noex_val * finally_mult)
+        lambda: modattr_(self.a, "x", double))()
+    self.assertEqual(self.a.x, double(noex_val))
 
   def test_python_try_finally_always(self):
     "Python's built-in try statement finally clause should run even if exception occurs and is not caught."
@@ -213,7 +215,7 @@ class test_for_(t.TestCase):
     break_val = 3
 
     for_(range(1, 5), lambda i:
-      break_() if i == break_val
+      break_ if i == break_val
       else setattr(self.a, "x", i))()
     self.assertEqual(self.a.x, break_val - 1)
 
@@ -222,29 +224,46 @@ class test_for_(t.TestCase):
     xs = []
 
     for_(range(1, 5), lambda i:
-      continue_() if i == skip_val
+      continue_ if i == skip_val
       else xs.append(i))()
     self.assertFalse(skip_val in xs)
+
+  def test_for_else_break(self):
+    "The else_ parameter should not run if we break out of the loop."
+    val = 0
+    d = { "x": val }
+
+    for_else_(range(5), lambda i: break_,
+    else_ = lambda: mod_("x", inc, d))()
+    self.assertEqual(d["x"], val)
+
+  def test_for_else_nobreak(self):
+    "The else_ parameter should run if we don't break out of the loop."
+    val = 0
+    d = { "x": val }
+
+    for_else_(range(5), lambda i: None,
+    else_ = lambda: mod_("x", inc, d))()
+    self.assertEqual(d["x"], val + 1)
 
 class test_while_(t.TestCase):
   def setUp(self):
     self.a = A()
     self.a.x = 0
-    self.inc = lambda x: x + 1
 
   def test_while_expr(self):
     val = 10
 
     while_(lambda: self.a.x < val, lambda:
-      modattr_(self.a, "x", self.inc))()
+      modattr_(self.a, "x", inc))()
     self.assertEqual(self.a.x, val)
 
   def test_while_break(self):
     break_val = 5
 
     while_(lambda: True, lambda:
-      break_() if self.a.x == break_val
-      else modattr_(self.a, "x", self.inc))()
+      break_ if self.a.x == break_val
+      else modattr_(self.a, "x", inc))()
     self.assertEqual(self.a.x, break_val)
 
   def test_while_continue(self):
@@ -253,10 +272,31 @@ class test_while_(t.TestCase):
     skip_val = 2
 
     while_(lambda: self.a.x <= 4, lambda:
-      modattr_(self.a, "x", self.inc, lambda:
-      continue_() if self.a.x == skip_val
+      modattr_(self.a, "x", inc, lambda:
+      continue_ if self.a.x == skip_val
       else xs.append(self.a.x)))()
     self.assertFalse(skip_val in xs)
+
+  def test_while_else_break(self):
+    "Should not run the else_ clause if we break out of the loop."
+    d = { "x": 0 }
+    break_val = 2
+    mult = 2
+
+    while_else_(lambda: d["x"] <= 4, lambda:
+      break_ if d["x"] == break_val
+      else mod_("x", inc, d),
+    else_ = lambda: mod_("x", double, d))()
+    self.assertEqual(d["x"], break_val)
+
+  def test_while_else_nobreak(self):
+    "Should run the else_ clause if we don't break out of the loop."
+    d = { "x": 0 }
+    loop_end = 4
+
+    while_else_(lambda: d["x"] < loop_end, lambda: mod_("x", inc, d),
+    else_ = lambda: mod_("x", double, d))()
+    self.assertEqual(d["x"], double(loop_end))
 
 class test_attr_accessors(t.TestCase):
   def setUp(self):
@@ -277,7 +317,6 @@ class test_attr_accessors(t.TestCase):
 
   def test_modattr_(self):
     self.a.x = 1
-    def inc(x): return x + 1
 
     modattr_(self.a, self.attr_name, inc)()
     self.assertEqual(self.a.x, 2)
@@ -336,8 +375,6 @@ class test_dict_accessors(t.TestCase):
     self.assertTrue(self.k not in self.d)
 
   def test_mod_(self):
-    def inc(x): return x + 1
-
     mod_(self.k, inc, self.d)()
     self.assertEqual(self.d[self.k], inc(self.v))
 
