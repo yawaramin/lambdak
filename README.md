@@ -44,6 +44,54 @@ prettify the code for readability. For example, it would represent the
 keyword `lambda` with the symbol 'λ', without changing the underlying
 source code.)
 
+## Contents
+
+  - [News](#news)
+
+  - [Overview](#overview)
+
+  - [Reference](#reference)
+
+    - [`call_(k)`](#call_)
+
+    - [`return_(k)`](#return_)
+
+    - [`given_(k)`](#given_)
+
+    - [`do_(expr_k, k = None)`](#do_)
+
+    - [`print_(x, k = None)`](#print_)
+
+    - [`assert_(expr, k = None)`](#assert_)
+
+    - [`for_(seq, act_k, k = None)`](#for_)
+
+    - [`for_else_(seq, act_k, else_, k = None)`](#for_else_)
+
+    - [`while_(seq, act_k, k = None)`](#while_)
+
+    - [`while_else_(seq, act_k, else_, k = None)`](#while_else_)
+
+    - [`with_(expr_k, act_k, k = None)`](#with_)
+
+    - [`cond_(test_pairs, default_expr, k = None)`](#cond_)
+
+    - [`import_(mod_name, k)`](#import_)
+
+    - [`try_(expr_k, except_, else_ = None, finally_ = None)`](#try_)
+
+    - [`raise_(ex_type = None, ex_val = None, tb_val = None)`](#raise_)
+
+    - [`assign_(nm, v, d, k = None)`](#assign_)
+
+    - [`get_(nm, d)`](#get_)
+
+    - [`mod_(nm, f, d, k = None)`](#mod_)
+
+    - [`del_(nm, d, k = None)`](#del_)
+
+    - More (both pending documentation and implementation)
+
 Anyway, what's with all the lambdas?
 
 We can't escape the fact that Python allows only one expression inside a
@@ -97,47 +145,6 @@ character ('_') as the last character.
 
 <!-- Reminder: vim bookmark 'r -->
 
-### Contents
-
-  - [`call_(k)`](#call_)
-
-  - [`return_(k)`](#return_)
-
-  - [`given_(k)`](#given_)
-
-  - [`do_(expr_k, k = None)`](#do_)
-
-  - [`print_(x, k = None)`](#print_)
-
-  - [`assert_(expr, k = None)`](#assert_)
-
-  - [`for_(seq, act_k, k = None)`](#for_)
-
-  - [`for_else_(seq, act_k, else_, k = None)`](#for_else_)
-
-  - [`while_(seq, act_k, k = None)`](#while_)
-
-  - [`while_else_(seq, act_k, else_, k = None)`](#while_else_)
-
-  - [`with_(expr_k, act_k, k = None)`](#with_)
-
-  - [`cond_(test_pairs, default_expr, k = None)`](#cond_)
-
-  - [`import_(mod_name, k)`](#import_)
-
-  - [`try_(expr_k, except_, else_ = None, finally_ = None)`](#try_)
-
-  - [`raise_(ex_type = None, ex_val = None, tb_val = None)`](#raise_)
-
-  - [`assign_(nm, v, d, k = None)`](#assign_)
-
-  - [`get_(nm, d)`](#get_)
-
-  - [`mod_(nm, f, d, k = None)`](#mod_)
-
-  - [`del_(nm, d, k = None)`](#del_)
-
-  - More (both pending documentation and implementation)
 
 ### `call_`
 
