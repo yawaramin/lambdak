@@ -210,7 +210,7 @@ calculations.
 
 #### Returns
 
-The same as `given_` would return.
+The same as [`given_`](#given_) would return.
 
 #### Example
 
@@ -244,11 +244,11 @@ Print a single expression and optionally carry on the computation.
     [`print`](https://docs.python.org/2/reference/simple_stmts.html#the-print-statement)
     statement.
 
-  - `k`. Optional (default `None`). The same as `do_`.
+  - `k`. Optional (default `None`). The same as [`do_`](#do_).
 
 #### Returns
 
-The same as `given_`.
+The same as [`given_`](#given_).
 
 ### `assert_`
 
@@ -258,11 +258,11 @@ The same as `given_`.
     [`assert`](https://docs.python.org/2/reference/simple_stmts.html#the-assert-statement)
     statement.
 
-  - `k`. Optional. The same as `do_`.
+  - `k`. Optional. The same as [`do_`](#do_).
 
 #### Returns
 
-The same as `given_`.
+The same as [`given_`](#given_).
 
 #### Example
 
@@ -305,7 +305,7 @@ as 'tags'. See examples below.
 
 #### Returns
 
-The same as `given_`.
+The same as [`given_`](#given_).
 
 #### Example
 
@@ -360,8 +360,8 @@ Notice how nothing is printed when `i` is 3!
 
 ### `for_else_`
 
-The same as `for_`, except with an extra required argument that is run
-if you _don't_ break out of the loop; see below.
+The same as [`for_`](#for_), except with an extra required argument that
+is run if you _don't_ break out of the loop; see below.
 
 The reason this is a separate function is that the `else` clause is
 rarely used in code; and it has the effect of making the function call
@@ -369,21 +369,22 @@ as a whole a little less readable.
 
 #### Arguments
 
-  - `seq`. Same as `for_`.
+  - `seq`. Same as [`for_`](#for_).
 
-  - `act_k`. Same as `for_`.
+  - `act_k`. Same as [`for_`](#for_).
 
   - `else_`. A function that is called if you _don't_ break out of the
     loop. This models Python's native `for` statement's `else` clause.
     For readability, you can write this as a named parameter when you
-    call the `for_else_` function; but if you do, you will also have to
-    name the `k` parameter according to Python's function call syntax.
+    call the [`for_else_`](#for_else_) function; but if you do, you will
+    also have to name the `k` parameter according to Python's function
+    call syntax.
 
-  - `k`. Same as `for_`.
+  - `k`. Same as [`for_`](#for_).
 
 #### Returns
 
-Same as `for_`.
+Same as [`for_`](#for_).
 
 #### Example
 
@@ -406,7 +407,7 @@ second line (`lambda _: None`) with `lambda _: break_`.
 
 Wraps Python's
 [`while`](https://docs.python.org/2/reference/compound_stmts.html#the-while-statement)
-statement. Like `for_`, fully supports breaking and continuing.
+statement. Like [`for_`](#for_), fully supports breaking and continuing.
 
 #### Arguments
 
@@ -417,16 +418,16 @@ statement. Like `for_`, fully supports breaking and continuing.
 
   - `act_k`. A function that takes no arguments and returns either a
     lambdak to continue the computation, or a final value to finish this
-    iteration of the loop. This is the loop action. As with the `for_`
-    lambdak, you can break or continue by returning values of type
-    `break_` or `continue_`. See the examples in the `for_` lambdak
-    (above).
+    iteration of the loop. This is the loop action. As with the
+    [`for_`](#for_) lambdak, you can break or continue by returning
+    values of type `break_` or `continue_`. See the examples in the
+    [`for_`](#for_) lambdak (above).
 
-  - `k`. Optional (default `None`). The same as `for_`.
+  - `k`. Optional (default `None`). The same as [`for_`](#for_).
 
 #### Returns
 
-The same as `for_`.
+The same as [`for_`](#for_).
 
 #### Example
 
@@ -450,8 +451,8 @@ Output:
 
 ### `while_else_`
 
-This is included for the same reason as `for_else_` and works in the
-same way.
+This is included for the same reason as [`for_else_`](#for_else_) and
+works in the same way.
 
 ### `with_`
 
@@ -475,11 +476,11 @@ statement, but is limited to only a single context binding at a time.
     If the context manager _does_ bind a value, then `act_k` will be
     called with that value as the argument.
 
-  - `k`. Optional (default `None`). The same as for `do_`.
+  - `k`. Optional (default `None`). The same as for [`do_`](#do_).
 
 #### Returns
 
-The same as for `given_`.
+The same as for [`given_`](#given_).
 
 #### Example
 
@@ -564,14 +565,15 @@ statement would be, or a switch statement in some other language.
     If you have effectful code in your `then_expr`s, you won't
     necessarily return a meaningful value from them; rather you will be
     returning the actions (lambdaks) themselves. As a convenience, you
-    can use the handy `return_` function as this argument in those cases
-    to just pass along that lambdak and carry out the action. See the
-    second example below.
+    can use the handy [`return_`](#return_) function as this argument in
+    those cases to just pass along that lambdak and carry out the
+    action. See the second example below.
 
 #### Returns
 
-The same as `given_`. You can think of this as a let binding where one
-binding will ultimately be chosen out of multiple possible bindings.
+The same as [`given_`](#given_). You can think of this as a let binding
+where one binding will ultimately be chosen out of multiple possible
+bindings.
 
 #### Example
 
@@ -604,9 +606,9 @@ Output:
 
     1
 
-The `return_` function works because it's the exact same thing as
-`lambda x: x`, which is what we need as the last argument of `cond_` to
-pass on the computed lambdak (action).
+The [`return_`](#return_) function works because it's the exact same
+thing as `lambda x: x`, which is what we need as the last argument of
+[`cond_`](#cond_) to pass on the computed lambdak (action).
 
 ### `import_`
 
@@ -624,7 +626,7 @@ Import a module and bind the module object to the parameter name of the
 
 #### Returns
 
-The same as `given_`.
+The same as [`given_`](#given_).
 
 #### Example
 
@@ -643,14 +645,15 @@ Output:
 
 Wrapper for Python's
 [`try`](https://docs.python.org/2/reference/compound_stmts.html#the-try-statement)
-statement. The last three arguments are meant to be named when `try_` is
-called; this is different from the other lambdak functions' usual call
-style but because of the different permutations of the arguments, it's
-more unambiguous to name the arguments and also it looks more naturally
-like Python's normal `try` statement. See the example below.
+statement. The last three arguments are meant to be named when
+[`try_`](#try_) is called; this is different from the other lambdak
+functions' usual call style but because of the different permutations of
+the arguments, it's more unambiguous to name the arguments and also it
+looks more naturally like Python's normal `try` statement. See the
+example below.
 
-Unlike Python's native `try` statement, the `try_` function only
-supports one `except` clause (the `except_` parameter, see below).
+Unlike Python's native `try` statement, the [`try_`](#try_) function
+only supports one `except` clause (the `except_` parameter, see below).
 
 #### Arguments
 
@@ -658,8 +661,9 @@ supports one `except` clause (the `except_` parameter, see below).
     expression to try.
 
   - `except_`. A function that takes no arguments and does anything. You
-    can think of this as the same as the `do_` lambdak's `k` parameter.
-    It is only run if the `expr_k` function raises an exceptio.
+    can think of this as the same as the [`do_`](#do_) lambdak's `k`
+    parameter. It is only run if the `expr_k` function raises an
+    exceptio.
 
   - `else_`. Optional (default `None`). A function that takes no
     argument and does anything. It is only called if the `expr_k`
@@ -674,7 +678,7 @@ supports one `except` clause (the `except_` parameter, see below).
 
 #### Returns
 
-The same as `given_`.
+The same as [`given_`](#given_).
 
 #### Example
 
@@ -725,11 +729,11 @@ below.
 
   - `d`. The dict to look in.
 
-  - `k`. Optional (default `None`). Same as for `do_`.
+  - `k`. Optional (default `None`). Same as for [`do_`](#do_).
 
 #### Returns
 
-The same as `given_`.
+The same as [`given_`](#given_).
 
 #### Example
 
@@ -786,11 +790,11 @@ Modify in-place the value of an object in a dict given its key.
 
   - `d`. The dict to look in.
 
-  - `k`. Optional (default `None`). The same as `assign_`.
+  - `k`. Optional (default `None`). The same as [`assign_`](#assign_).
 
 #### Returns
 
-The same as `assign_`.
+The same as [`assign_`](#assign_).
 
 #### Example
 
@@ -807,11 +811,11 @@ global variable. See example below.
 
   - `d`. The dict to look in.
 
-  - `k`. Optional (default `None`). Same as for `do_`.
+  - `k`. Optional (default `None`). Same as for [`do_`](#do_).
 
 #### Returns
 
-The same as `given_`.
+The same as [`given_`](#given_).
 
 #### Example
 
