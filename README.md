@@ -101,6 +101,8 @@ character ('_') as the last character.
 
   - [`call_(k)`](#call_)
 
+  - [`return_(k)`](#return_)
+
   - [`given_(k)`](#given_)
 
   - [`do_(expr_k, k = None)`](#do_)
@@ -148,6 +150,24 @@ Call the given function with no arguments.
 #### Returns
 
 The result returned by `k`, or `None` if `k` is `None`.
+
+### `return_`
+
+Simple return the value that is passed in to it. This is the identity
+function for any type.
+
+#### Arguments
+
+  - `x`. Any value.
+
+#### Returns
+
+`x` itself.
+
+#### Example
+
+See a useful example in the documentation for the [`cond_`](#cond_)
+function.
 
 ### `given_`
 
