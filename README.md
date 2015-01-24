@@ -52,11 +52,11 @@ source code.)
 
   - [Reference](#reference)
 
-    - [`call_(k)`](#call_)
+    - [`call_(k, *args)`](#call_)
 
-    - [`return_(k)`](#return_)
+    - [`return_(x)`](#return_)
 
-    - [`const_(k)`](#const_)
+    - [`const_(x)`](#const_)
 
     - [`given_(k)`](#given_)
 
@@ -150,11 +150,15 @@ character ('_') as the last character.
 
 ### `call_`
 
-Call the given function with no arguments.
+Call the given function with optional arguments.
 
 #### Arguments
 
-  - `k`. The function to call. It will be called with no arguments.
+  - `k`. The function to call. It will be called with any arguments as
+    specified below.
+
+  - `*args`. If any arguments are given here, they will be exploded and
+    passed to `k`.
 
 #### Returns
 
