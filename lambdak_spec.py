@@ -173,7 +173,7 @@ class test_try_(t.TestCase):
       except_ = lambda: setattr(self.a, "x", ex_val),
       else_ = lambda: setattr(self.a, "x", noex_val),
       finally_ =
-        lambda: modattr_(self.a, "x", double))()
+        const_(modattr_(self.a, "x", double)))()
     self.assertEqual(self.a.x, double(ex_val))
 
   def test_try_noexn_else_finally(self):
@@ -186,8 +186,17 @@ class test_try_(t.TestCase):
       except_ = lambda: setattr(self.a, "x", ex_val),
       else_ = lambda: setattr(self.a, "x", noex_val),
       finally_ =
-        lambda: modattr_(self.a, "x", double))()
+        const_(modattr_(self.a, "x", double)))()
     self.assertEqual(self.a.x, double(noex_val))
+
+  def test_try_exn_retval(self):
+    "The try_ lambdak should be able to 'return' a result value."
+    x = try_(
+      lambda: 1 / 0,
+      except_ = lambda: 0,
+      finally_ = return_)()
+
+    self.assertEqual(x, 0)
 
   def test_python_try_finally_always(self):
     "Python's built-in try statement finally clause should run even if exception occurs and is not caught."

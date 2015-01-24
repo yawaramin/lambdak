@@ -26,7 +26,7 @@ actions = {
     print_("Goodbye, Cruel World!", lambda:
 
     try_(lambda: 1 / 0,
-      except_ = lambda: print_("Danger, Will Robinson!"))) }
+      except_ = const_(print_("Danger, Will Robinson!")))) }
 
 actions["hello"]()
 actions["goodbye"]()
@@ -55,6 +55,8 @@ source code.)
     - [`call_(k)`](#call_)
 
     - [`return_(k)`](#return_)
+
+    - [`const_(k)`](#const_)
 
     - [`given_(k)`](#given_)
 
@@ -175,6 +177,25 @@ function for any type.
 
 See a useful example in the documentation for the [`cond_`](#cond_)
 function.
+
+### `const_`
+
+A convenience function that takes a value and returns a function which
+always returns that value regardless of its input. Think of it as
+'constantly' returning that value.
+
+#### Arguments
+
+  - `x`. Any value.
+
+#### Returns
+
+A function which takes a single argument and always returns `x` no
+matter what.
+
+#### Example
+
+See the example for the [`try_`](#try_) lambdak.
 
 ### `given_`
 
@@ -417,7 +438,7 @@ Same as [`for_`](#for_).
 
 ```python
 for_else_(range(5),
-  lambda _: None,
+  const_(None),
 else_ = lambda: print_("Didn't break out of loop!"),
 k = lambda: print_("Done!"))()
 ```
@@ -428,7 +449,7 @@ Output:
     Done!
 
 To verify what happens if you do break out of the loop, replace the
-second line (`lambda _: None`) with `lambda _: break_`.
+second line (`const_(None)`) with `const_(break_)`.
 
 ### `while_`
 
@@ -682,6 +703,14 @@ example below.
 Unlike Python's native `try` statement, the [`try_`](#try_) function
 only supports one `except` clause (the `except_` parameter, see below).
 
+Also, it 'returns' the value of whichever expression succeeded: the
+'try' expression, or the 'except' expression. This means you can do
+things like 'return' a value from this lambdak and assign it to
+something, and the value will depend on whether or not an exception was
+raised. This fulfills the purpose of [PEP
+463](http://legacy.python.org/dev/peps/pep-0463/) (Exception-catching
+expressions). See example below.
+
 #### Arguments
 
   - `expr_k`. A function that takes no arguments and returns an
@@ -696,12 +725,16 @@ only supports one `except` clause (the `except_` parameter, see below).
     argument and does anything. It is only called if the `expr_k`
     function does _not_ raise an exception.
 
-  - `finally_`. Optional (default `None`). A function that takes no
-    arguments and returns either a lambdak or a final result. Doubles as
+  - `finally_`. Optional (default `None`). A function that takes one
+    argument and returns either a lambdak or a final result. Doubles as
     the `finally` block of the `try` statement _and_ as the continuation
     function, because the `finally` block is _always_ executed whether
     or not an exception occurred (for proof, see `lambdak_spec.py`,
     class `test_try_`, method `test_python_try_finally_always`).
+
+    The argument that it takes is either the value from evaluating the
+    `expr_k` parameter (if it succeeded) or of evaluating the `except_`
+    parameter (if the former did not succeed). See example below.
 
 #### Returns
 
@@ -713,13 +746,33 @@ The same as [`given_`](#given_).
 try_(lambda: 1 / 0,
   except_ = lambda: print_("Error!"),
   else_ = lambda: print_("No error."),
-  finally_ = lambda: print_("Cleanup."))()
+  finally_ = const_(print_("Cleanup.")))()
 ```
 
 Output:
 
     Error!
     Cleanup.
+
+Returning a value:
+
+```python
+d = { 1: "a" }
+
+x = try_(lambda: d[2],
+  except_ = lambda: "b",
+  finally_ = return_)()
+
+print x
+```
+
+Output:
+
+    b
+
+Remember, the [`return_`](#return_) function takes a value and
+immediately returns it, so the `finally_` parameter above does get an
+argument which takes a value.
 
 ### `raise_`
 

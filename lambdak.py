@@ -37,6 +37,8 @@ def call_(k, *args): return None if k is None else k(*args)
 
 def return_(x): return x
 
+def const_(x): return lambda _: x
+
 def given_(k): return lambdak(k)
 
 def do_(expr_k, k = None):
@@ -81,10 +83,10 @@ def import_(mod_name, k):
 
 def try_(expr_k, except_, else_ = None, finally_ = None):
   def act():
-    try: lambdak(expr_k)()
-    except: lambdak(except_)()
+    try: y = lambdak(expr_k)()
+    except: y = lambdak(except_)()
     else: lambdak(else_)()
-    finally: return call_(finally_)
+    finally: return lambdak(finally_, y)
 
   return lambdak(act)
 
